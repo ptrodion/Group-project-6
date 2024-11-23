@@ -6,6 +6,7 @@ import compression from 'compression';
 import { env } from './utils/env.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import commonRouter from './routers/common.js';
 
 export const setupServer = () => {
   const app = express();
@@ -16,8 +17,7 @@ export const setupServer = () => {
   app.use(express.json());
   app.use(cors());
 
-  // Пример для описания роутеров.
-  // app.use('/api', apiRoutes);
+  app.use('/api', commonRouter);
 
   app.use(
     pino({
