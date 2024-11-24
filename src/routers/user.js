@@ -17,8 +17,8 @@ userRouter.post('/login', ctrlWrapper(loginController));
 userRouter.post('/refresh', ctrlWrapper(refreshTokenController));
 
 userRouter.use(authMiddleware);
-userRouter.get('/me', ctrlWrapper(getCurrentUserController));
-userRouter.patch('/me', ctrlWrapper(updateCurrentUserController));
+userRouter.get('/find-user', ctrlWrapper(getCurrentUserController));
+userRouter.patch('/update-user', ctrlWrapper(updateCurrentUserController));
 userRouter.post('/logout', ctrlWrapper(logoutController));
 
 export default userRouter;

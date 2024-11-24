@@ -17,6 +17,4 @@ const sessionSchema = new Schema(
   },
 );
 
-const Session = model('Session', sessionSchema);
-
-export { Session };
+export const Session = model('Session', sessionSchema);
