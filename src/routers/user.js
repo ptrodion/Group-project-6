@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import express from 'express';
 import {
   registerController,
   loginController,
@@ -10,20 +10,15 @@ import {
 import { authMiddleware } from '../middlewares/authMiddleware.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
-const userRouter = Router();
-
-userRouter.use(authMiddleware);
-
-userRouter.get('/find-one-user', ctrlWrapper(getCurrentUserController));
+const userRouter = express.Router();
 
 userRouter.post('/register', ctrlWrapper(registerController));
 userRouter.post('/login', ctrlWrapper(loginController));
 userRouter.post('/refresh', ctrlWrapper(refreshTokenController));
-userRouter.post('/logout', ctrlWrapper(logoutController));
 
-userRouter.patch(
-  '/update-current-user',
-  ctrlWrapper(updateCurrentUserController),
-);
+userRouter.use(authMiddleware);
+userRouter.get('/find-one-user', ctrlWrapper(getCurrentUserController));
+userRouter.patch('/update-current-user', ctrlWrapper(updateCurrentUserController));
+userRouter.post('/logout', ctrlWrapper(logoutController));
 
 export default userRouter;
