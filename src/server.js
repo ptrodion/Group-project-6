@@ -20,9 +20,6 @@ export const setupServer = () => {
   app.use(cors());
   app.use(cookieParser());
 
-  app.use('/api', commonRouter);
-  app.use('/api', userRouter);
-
   app.use(
     pino({
       transport: {
@@ -30,6 +27,9 @@ export const setupServer = () => {
       },
     }),
   );
+
+  app.use('/api', commonRouter);
+  app.use('/api/auth', userRouter);
 
   app.use('*', notFoundHandler);
   app.use(errorHandler);
