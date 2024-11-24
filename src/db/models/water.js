@@ -14,13 +14,9 @@ const waterSchema = new Schema(
       type: Number,
       required: true,
     },
-    percentage: {
-      type: Number,
-    },
-
     owner: {
       type: Schema.Types.ObjectId,
-      ref: 'users',
+      ref: 'Users',
     },
   },
   {
@@ -29,4 +25,4 @@ const waterSchema = new Schema(
   },
 );
 
-export const WaterCollection = model('water', waterSchema);
+export const WaterCollection = model('Water', waterSchema);
