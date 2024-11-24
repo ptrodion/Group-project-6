@@ -8,16 +8,17 @@ import {
   updateCurrentUserController,
 } from '../controllers/user.js';
 import { authMiddleware } from '../middlewares/authMiddleware.js';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
 const userRouter = express.Router();
 
-userRouter.post('/register', registerController);
-userRouter.post('/login', loginController);
-userRouter.post('/refresh', refreshTokenController);
+userRouter.post('/register', ctrlWrapper(registerController));
+userRouter.post('/login', ctrlWrapper(loginController));
+userRouter.post('/refresh', ctrlWrapper(refreshTokenController));
 
 userRouter.use(authMiddleware); // Захищає всі маршрути нижче
-userRouter.get('/me', getCurrentUserController);
-userRouter.patch('/me', updateCurrentUserController);
-userRouter.post('/logout', logoutController);
+userRouter.get('/me', ctrlWrapper(getCurrentUserController));
+userRouter.patch('/me', ctrlWrapper(updateCurrentUserController));
+userRouter.post('/logout', ctrlWrapper(logoutController));
 
 export default userRouter;
