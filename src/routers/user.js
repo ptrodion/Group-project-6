@@ -16,7 +16,7 @@ userRouter.post('/register', ctrlWrapper(registerController));
 userRouter.post('/login', ctrlWrapper(loginController));
 userRouter.post('/refresh', ctrlWrapper(refreshTokenController));
 
-userRouter.use(authMiddleware); // Захищає всі маршрути нижче
+userRouter.use(authMiddleware);
 userRouter.get('/me', ctrlWrapper(getCurrentUserController));
 userRouter.patch('/me', ctrlWrapper(updateCurrentUserController));
 userRouter.post('/logout', ctrlWrapper(logoutController));
