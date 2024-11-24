@@ -9,9 +9,6 @@ import {
   // resetPassword,
 } from '../services/user.js';
 
-import createHttpError from 'http-errors';
-import { UsersCollection } from '../db/models/user.js';
-
 export const registerController = async (req, res) => {
   const { name, email, password, gender } = req.body;
 
