@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import pino from 'pino-http';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -7,6 +8,7 @@ import { env } from './utils/env.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import commonRouter from './routers/common.js';
+import userRouter from './routers/user.js';
 
 export const setupServer = () => {
   const app = express();
@@ -16,8 +18,10 @@ export const setupServer = () => {
   app.use(compression());
   app.use(express.json());
   app.use(cors());
+  app.use(cookieParser());
 
   app.use('/api', commonRouter);
+  app.use('/api', userRouter);
 
   app.use(
     pino({
