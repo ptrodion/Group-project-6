@@ -7,10 +7,10 @@ const waterSchema = new Schema(
       required: true,
     },
     date: {
-      type: Date,
+      type: String,
       required: true,
     },
-    norm: {
+    currentDailyNorm: {
       type: Number,
       required: true,
     },
