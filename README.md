@@ -29,6 +29,7 @@ collection water:
 amount
 userId
 date = 'YYYY-MM-DDThh:mm:ss'
+date  = 'YYYY-MM-DDThh:mm:ss'
 currentDailyNorm
 createdAt
 updatedAt
