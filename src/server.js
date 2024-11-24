@@ -9,6 +9,7 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import commonRouter from './routers/common.js';
 import userRouter from './routers/user.js';
+import waterRouter from './routers/water.js';
 
 export const setupServer = () => {
   const app = express();
@@ -22,7 +23,7 @@ export const setupServer = () => {
 
   app.use('/api', commonRouter);
   app.use('/api', userRouter);
-
+  app.use('/api', waterRouter);
   app.use(
     pino({
       transport: {
