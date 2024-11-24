@@ -1,6 +1,6 @@
 # Group-project-6
-Node.JS + React + CSS + HTML
 
+Node.JS + React + CSS + HTML
 
 Creation of a backend server for monitoring water consumption in an application
 
@@ -28,6 +28,7 @@ refreshTokenValidUntill
 collection water:
 amount
 userId
+date = 'YYYY-MM-DDThh:mm:ss'
 date  = 'YYYY-MM-DDThh:mm:ss'
 currentDailyNorm
 createdAt
