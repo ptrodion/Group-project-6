@@ -29,6 +29,7 @@ export const setupServer = () => {
   );
 
   app.use('/api', commonRouter);
+
   app.use('/api/auth', userRouter);
 
   app.use('*', notFoundHandler);

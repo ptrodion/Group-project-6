@@ -1,5 +1,5 @@
 import createHttpError from 'http-errors';
-import { Session } from '../db/models/session.js';
+import { SessionCollection } from '../db/models/session.js';
 
 export const authMiddleware = async (req, res, next) => {
   try {
@@ -11,7 +11,7 @@ export const authMiddleware = async (req, res, next) => {
 
     const accessToken = authHeader.split(' ')[1];
 
-    const session = await Session.findOne({
+    const session = await SessionCollection.findOne({
       accessToken,
       accessTokenValidUntil: { $gt: new Date() },
     });
@@ -20,7 +20,7 @@ export const authMiddleware = async (req, res, next) => {
       throw createHttpError(401, 'Invalid or expired access token');
     }
 
-    req.user = session.userId; // Передаємо користувача в `req`
+    req.user = session.userId;
     next();
   } catch (error) {
     next(error);
