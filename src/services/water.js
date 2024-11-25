@@ -3,18 +3,7 @@ import { WaterCollection } from '../db/models/water.js';
 //creating a new record(volume,date and userId)
 
 export const createWater = async (payload) => {
-  let { amount, date, currentDailyNorm, userId } = payload;
-
-  const water = await WaterCollection.create({
-    amount,
-    date,
-    currentDailyNorm,
-    owner: userId,
-  });
-
-  const { _id, owner, ...other } = water.toObject();
-  const data = { id: _id, ...other };
-  return data;
+  return await WaterCollection.create(payload);
 };
 
 //get water consumption record(id record,userId)to check if there is such a record
@@ -27,9 +16,7 @@ export const getWaterById = async (waterId, userId) => {
 
   if (!water) return null;
 
-  const { _id, owner, ...other } = water.toObject();
-  const data = { id: _id, ...other };
-  return data;
+  return water;
 };
 
 //update consumption record by id(waterId,userId,payload-new data for update-amount and date)
@@ -64,9 +51,7 @@ export const updateWaterById = async (
 
   if (!updatedWater) return null;
 
-  const { _id, owner, ...other } = updatedWater.toObject();
-  const data = { id: _id, ...other };
-  return data;
+  return updatedWater;
 };
 
 //delete consumption record by id(waterId,userId)
@@ -79,9 +64,7 @@ export const deleteWaterById = async (waterId, userId) => {
 
   if (!water) return null;
 
-  const { _id, owner, ...other } = water.toObject();
-  const data = { id: _id, ...other };
-  return data;
+  return water;
 };
 
 //get all records of water consumption per day
