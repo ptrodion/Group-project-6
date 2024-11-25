@@ -4,7 +4,7 @@ const userSchema = new Schema(
   {
     name: {
       type: String,
-      default: ' ',
+      default: '',
       trim: true,
     },
     email: {
@@ -20,8 +20,8 @@ const userSchema = new Schema(
     gender: {
       type: String,
       required: true,
-      enum: ['Woman', 'Man'],
-      default: 'Woman',
+      enum: ['woman', 'man'],
+      default: 'woman',
     },
     weight: { type: Number, default: 0 },
     activeTime: { type: Number, default: 0 }, // у хвилинах
@@ -30,13 +30,15 @@ const userSchema = new Schema(
   {
     timestamps: true,
     versionKey: false,
-    toJSON: { virtuals: true }, // для того щоб, якщо не ввели імя, було написано початок електронної пошти
   },
 );
 
 userSchema.virtual('displayName').get(function () {
-  return this.name || `Привіт, ${this.email.split('@')[0]}`;
+  return this.name || `Hello, ${this.email.split('@')[0]}`;
 }); // для того щоб, якщо не ввели імя, було написано початок електронної пошти
+
+userSchema.set('toJSON', { virtuals: true });
+userSchema.set('toObject', { virtuals: true }); // для того щоб, якщо не ввели імя, було написано початок електронної пошти
 
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();

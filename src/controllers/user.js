@@ -3,20 +3,21 @@ import {
   loginUser,
   logoutUser,
   refreshSession,
-  getCurrentUser,
   updateUser,
+  getCurrentUser,
   // requestResetEmail,
   // resetPassword,
 } from '../services/user.js';
 
 export const registerController = async (req, res) => {
-  const { name, email, password, gender } = req.body;
+  const { name, email, password, gender, currentDailyNorm } = req.body;
 
   const registeredUser = await registerUser({
     name,
     email,
     password,
     gender,
+    currentDailyNorm,
   });
 
   res.status(201).json({
@@ -50,7 +51,7 @@ export const loginController = async (req, res) => {
 };
 
 export const getCurrentUserController = async (req, res) => {
-  const user = await getCurrentUser();
+  const user = await getCurrentUser(req.user);
   res.status(200).json({
     status: 200,
     message: 'User information retrieved successfully!',
@@ -59,8 +60,8 @@ export const getCurrentUserController = async (req, res) => {
 };
 
 export const updateCurrentUserController = async (req, res) => {
-  const updatedUser = await updateUser();
-
+  const updateData = req.body;
+  const updatedUser = await updateUser(req.user, updateData);
   res.status(200).json({
     status: 200,
     message: 'User updated successfully!',
