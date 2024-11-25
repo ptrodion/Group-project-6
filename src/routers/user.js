@@ -1,4 +1,6 @@
+
 import { Router } from 'express';
+
 import express from 'express';
 import {
   registerController,
@@ -17,6 +19,7 @@ import {
   updateCurrentUserSchema,
 } from '../validation/user.js';
 // import { isValidId } from '../middlewares/isValidId.js';
+
 
 const userRouter = Router();
 const jsonParser = express.json({
