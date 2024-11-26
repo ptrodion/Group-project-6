@@ -18,11 +18,29 @@ export const registerUserSchema = Joi.object({
     'string.min': 'Password should be at least 6 characters long',
     'any.required': 'Password is required',
   }),
-  gender: Joi.string().valid('woman', 'man').required(),
-  currentDailyNorm: Joi.number().min(50).max(5000).required(),
+  gender: Joi.string().valid('woman', 'man').required().messages({
+    'any.required': 'Gender is required',
+  }),
+  currentDailyNorm: Joi.number()
+    .integer()
+    .min(50)
+    .max(5000)
+    .required()
+    .messages({
+      'any.required': 'CurrentDailyNorm is required',
+      'number.integer': 'CurrentDailyNorm must be an integer',
+      'number.min': 'CurrentDailyNorm must be at least 50',
+      'number.max': 'CurrentDailyNorm must be at most 5000',
+    }),
   avatarUrl: Joi.string().optional(),
-  weight: Joi.number().min(0).optional(),
-  activeTime: Joi.number().min(0).optional(),
+  weight: Joi.number().integer().min(0).optional().messages({
+    'number.integer': 'Weight must be an integer',
+    'number.min': 'Weight cannot be less than 0',
+  }),
+  activeTime: Joi.number().integer().min(0).optional().messages({
+    'number.integer': 'ActiveTime must be an integer',
+    'number.min': 'ActiveTime cannot be less than 0',
+  }),
 });
 
 export const loginUserSchema = Joi.object({
@@ -58,8 +76,19 @@ export const updateCurrentUserSchema = Joi.object({
     'any.required': 'Password is required',
   }),
   gender: Joi.string().valid('woman', 'man'),
-  currentDailyNorm: Joi.number().min(50).max(5000),
+  currentDailyNorm: Joi.number().integer().min(50).max(5000).messages({
+    'any.required': 'CurrentDailyNorm is required',
+    'number.integer': 'CurrentDailyNorm must be an integer',
+    'number.min': 'CurrentDailyNorm must be at least 50',
+    'number.max': 'CurrentDailyNorm must be at most 5000',
+  }),
   avatarUrl: Joi.string(),
-  weight: Joi.number().min(0),
-  activeTime: Joi.number().min(0),
+  weight: Joi.number().integer().min(0).messages({
+    'number.integer': 'Weight must be an integer',
+    'number.min': 'Weight cannot be less than 0',
+  }),
+  activeTime: Joi.number().integer().min(0).messages({
+    'number.integer': 'ActiveTime must be an integer',
+    'number.min': 'ActiveTime cannot be less than 0',
+  }),
 });

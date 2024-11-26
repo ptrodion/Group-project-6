@@ -1,7 +1,6 @@
 
 import { Router } from 'express';
 
-import express from 'express';
 import {
   registerController,
   loginController,
@@ -19,22 +18,19 @@ import {
   updateCurrentUserSchema,
 } from '../validation/user.js';
 // import { isValidId } from '../middlewares/isValidId.js';
+import { upload } from '../middlewares/multer.js';
 
 
 const userRouter = Router();
-const jsonParser = express.json({
-  type: 'application/json',
-});
 
 userRouter.post(
   '/register',
-  jsonParser,
+  upload.single('avatarUrl'),
   validateBody(registerUserSchema),
   ctrlWrapper(registerController),
 );
 userRouter.post(
   '/login',
-  jsonParser,
   validateBody(loginUserSchema),
   ctrlWrapper(loginController),
 );
@@ -42,6 +38,7 @@ userRouter.post(
 userRouter.get(
   '/find-one-user',
   // isValidId,
+  upload.single('avatarUrl'),
   authMiddleware,
   ctrlWrapper(getCurrentUserController),
 );
@@ -49,6 +46,7 @@ userRouter.get(
 userRouter.patch(
   '/update-current-user',
   // isValidId,
+  upload.single('avatarUrl'),
   validateBody(updateCurrentUserSchema),
   authMiddleware,
   ctrlWrapper(updateCurrentUserController),
