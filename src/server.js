@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'node:path';
 import cookieParser from 'cookie-parser';
 import pino from 'pino-http';
 import cors from 'cors';
@@ -31,6 +32,10 @@ export const setupServer = () => {
   app.use('/api', commonRouter);
 
   app.use('/api/auth', userRouter);
+  app.use(
+    'api/auth/avatar',
+    express.static(path.resolve('src', 'public/photos')),
+  );
 
   app.use('*', notFoundHandler);
   app.use(errorHandler);
