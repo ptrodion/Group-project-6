@@ -11,8 +11,10 @@ import {
 
 export const registerController = async (req, res) => {
   // const { name, email, password, gender, currentDailyNorm } = req.body;
+  const { body } = req;
+  const file = req.file;
 
-  const registeredUser = await registerUser(req.body);
+  const registeredUser = await registerUser(body, file);
 
   res.status(201).json({
     status: 201,
