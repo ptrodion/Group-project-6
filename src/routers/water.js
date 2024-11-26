@@ -16,11 +16,11 @@ waterRouter.use(authMiddleware);
 
 waterRouter.post('/water', ctrlWrapper(createWaterController));
 
-waterRouter.get('/water/:id', ctrlWrapper(getWaterByIdController));
+waterRouter.get('/water/:waterId', ctrlWrapper(getWaterByIdController));
 
-waterRouter.patch('/water/:id', ctrlWrapper(updateWaterController));
+waterRouter.patch('/water/:waterId', ctrlWrapper(updateWaterController));
 
-waterRouter.delete('/water/:id', ctrlWrapper(deleteWaterController));
+waterRouter.delete('/water/:waterId', ctrlWrapper(deleteWaterController));
 
 waterRouter.get('/water/day/:date', ctrlWrapper(getWaterPerDayController));
 

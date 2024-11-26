@@ -9,9 +9,14 @@ import {
 } from '../services/water.js';
 
 export const createWaterController = async (req, res) => {
+  const userId = req.user; //id from authMiddleware
+  const { amount, date, currentDailyNorm } = req.body;
+  //data to be transfered to the service
   const data = {
-    ...req.body,
-    userId: req.user.id,
+    amount,
+    date,
+    currentDailyNorm,
+    userId,
   };
 
   const water = await createWater(data);
@@ -24,10 +29,10 @@ export const createWaterController = async (req, res) => {
 };
 
 export const getWaterByIdController = async (req, res, next) => {
-  const { id } = req.params;
-  const userId = req.user.id;
+  const { waterId } = req.params; //from route
+  const userId = req.user; //user's id from authMiddleware
 
-  const water = await getWaterById(id, userId);
+  const water = await getWaterById(waterId, userId);
 
   if (!water) {
     return next(createHttpError(404, 'Water record not found'));
@@ -35,17 +40,17 @@ export const getWaterByIdController = async (req, res, next) => {
 
   res.status(200).json({
     status: 200,
-    message: `Successfully found water record with ID: ${id}!`,
+    message: `Successfully found water record with ID: ${waterId}!`,
     data: water,
   });
 };
 
 export const updateWaterController = async (req, res, next) => {
-  const { id } = req.params;
-  const userId = req.user.id;
-  const data = { ...req.body };
+  const { waterId } = req.params; //from route params
+  const userId = req.user; //from authMiddleware
+  const data = { ...req.body }; //data for update
 
-  const updatedWater = await updateWaterById(id, userId, data);
+  const updatedWater = await updateWaterById(waterId, userId, data);
 
   if (!updatedWater) {
     return next(createHttpError(404, 'Water record not found'));
@@ -59,10 +64,10 @@ export const updateWaterController = async (req, res, next) => {
 };
 
 export const deleteWaterController = async (req, res, next) => {
-  const { id } = req.params;
-  const userId = req.user.id;
+  const { waterId } = req.params;
+  const userId = req.user;
 
-  const deletedWater = await deleteWaterById(id, userId);
+  const deletedWater = await deleteWaterById(waterId, userId);
 
   if (!deletedWater) {
     return next(createHttpError(404, 'Water record not found'));
@@ -72,29 +77,30 @@ export const deleteWaterController = async (req, res, next) => {
 };
 
 export const getWaterPerDayController = async (req, res, next) => {
-  const userId = req.user.id;
-  const { date } = req.params;
+  const userId = req.user; //from authMiddleware
+  const { date } = req.query; //from query parametrs
 
-  const result = await getWaterPerDay({ userId, date });
+  const { totalWater, allRecords } = await getWaterPerDay(userId, date);
 
   res.status(200).json({
     status: 200,
     message: 'Successfully retrieved daily water records!',
-    data: result,
-    totalAmount: result.reduce((sum, record) => sum + record.amount, 0),
+    data: {
+      totalWater,
+      records: allRecords,
+    },
   });
 };
 
 export const getWaterPerMonthController = async (req, res, next) => {
-  const userId = req.user.id;
-  const { date } = req.params;
+  const userId = req.user;
+  const { date } = req.query;
 
-  const result = await getWaterPerMonth({ userId, date });
+  const result = await getWaterPerMonth(userId, date);
 
   res.status(200).json({
     status: 200,
     message: 'Successfully retrieved monthly water records!',
-    data: result,
-    length: result.length,
+    data: { total: result },
   });
 };

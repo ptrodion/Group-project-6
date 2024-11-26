@@ -11,7 +11,7 @@ export const createWater = async (payload) => {
 export const getWaterById = async (waterId, userId) => {
   const water = await WaterCollection.findOne({
     _id: waterId,
-    owner: userId,
+    userId,
   });
 
   if (!water) return null;
@@ -40,7 +40,7 @@ export const updateWaterById = async (
   const updatedWater = await WaterCollection.findOneAndUpdate(
     {
       _id: waterId,
-      owner: userId,
+      userId,
     },
     { amount, date, currentDailyNorm },
     {
@@ -59,7 +59,7 @@ export const updateWaterById = async (
 export const deleteWaterById = async (waterId, userId) => {
   const water = await WaterCollection.findOneAndDelete({
     _id: waterId,
-    owner: userId,
+    userId,
   });
 
   if (!water) return null;
@@ -74,11 +74,24 @@ export const getWaterPerDay = async ({ userId, date }) => {
   const endOfDay = new Date(`${date}T23:59:59Z`);
 
   const waterRecords = await WaterCollection.find({
-    owner: userId,
+    userId,
     date: { $gte: startOfDay.toISOString(), $lte: endOfDay.toISOString() },
   }).lean();
 
-  return waterRecords.map(({ _id, owner, ...rest }) => ({ id: _id, ...rest }));
+  const totalWater = waterRecords.reduce(
+    (sum, record) => sum + record.amount,
+    0,
+  );
+  //array of all records of a day
+
+  const allRecords = waterRecords.map((record) => ({
+    id: record._id,
+    amount: record.amount,
+    date: record.date,
+    currentDailyNorm: record.currentDailyNorm,
+  }));
+
+  return { totalWater, allRecords };
 };
 
 //get water consumption per month
@@ -89,25 +102,14 @@ export const getWaterPerMonth = async ({ userId, date }) => {
   endOfMonth.setMonth(endOfMonth.getMonth() + 1);
 
   const waterRecords = await WaterCollection.find({
-    owner: userId,
+    userId,
     date: { $gte: startOfMonth.toISOString(), $lt: endOfMonth.toISOString() },
   }).lean();
 
-  const dailyWater = {};
+  const totalWater = waterRecords.reduce(
+    (sum, record) => sum + record.amount,
+    0,
+  );
 
-  waterRecords.forEach((record) => {
-    const recordDate = new Date(record.date);
-    const day = recordDate.toISOString().split('T')[0];
-
-    if (!dailyWater[day]) {
-      dailyWater[day] = 0;
-    }
-
-    dailyWater[day] += record.amount;
-  });
-
-  return Object.keys(dailyWater).map(([day, totalAmount]) => ({
-    date: day,
-    totalAmount,
-  }));
+  return totalWater;
 };
