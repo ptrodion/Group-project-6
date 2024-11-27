@@ -35,15 +35,15 @@ export const registerUser = async (payload, file) => {
   payload.password = await bcrypt.hash(payload.password, 10);
   if (file) {
     const avatarTempPath = file.path; // шлях до тимчасового файлу
-    const avatarFinalPath = path.resolve('src', 'tmp', file.filename);
-    const uploadsDir = path.resolve('src', 'tmp');
+    const avatarFinalPath = path.resolve('src', 'public/photos', file.filename);
+    const uploadsDir = path.resolve('src', 'public/photos');
     await fs.mkdir(uploadsDir, { recursive: true });
     try {
       // Перемістити файл із тимчасової папки до постійної
       await fs.rename(avatarTempPath, avatarFinalPath);
 
       // Додати шлях до аватара у payload
-      payload.avatarUrl = `/tmp/${file.filename}`;
+      payload.avatarUrl = `/photos/${file.filename}`;
     } catch (error) {
       console.error('Error handling avatar upload:', error);
       throw createHttpError(500, 'Error processing avatar upload');
@@ -117,11 +117,19 @@ export const updateUser = async (userId, updateData, file) => {
   if (file) {
     const avatarFilename = `${Date.now()}-${file.originalname}`;
     const avatarTempPath = file.path;
-    const avatarFinalPath = path.resolve('src', 'tmp', avatarFilename);
+    const avatarFinalPath = path.resolve(
+      'src',
+      'public/photos',
+      avatarFilename,
+    );
 
     // Видалити старий аватар, якщо він є
     if (updatedUser.avatarUrl) {
-      const oldAvatarPath = path.resolve('src', 'tmp', updatedUser.avatarUrl);
+      const oldAvatarPath = path.resolve(
+        'src',
+        'public/photos',
+        updatedUser.avatarUrl,
+      );
       try {
         await fs.unlink(oldAvatarPath);
       } catch (error) {
@@ -132,7 +140,7 @@ export const updateUser = async (userId, updateData, file) => {
     // Перемістити новий аватар
     try {
       await fs.rename(avatarTempPath, avatarFinalPath);
-      updateData.avatarUrl = `/tmp/${avatarFilename}`;
+      updateData.avatarUrl = `/photos/${avatarFilename}`;
     } catch (error) {
       console.error('Error handling avatar upload:', error);
       throw createHttpError(500, 'Error processing avatar upload');

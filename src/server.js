@@ -23,7 +23,11 @@ export const setupServer = () => {
   app.use(cookieParser());
 
   app.use('/api', commonRouter);
-  app.use('/api', userRouter);
+  app.use('/api/auth', userRouter);
+  app.use(
+    'api/auth/avatar',
+    express.static(path.resolve('src', 'public/photos')),
+  );
   app.use('/api', waterRouter);
   app.use(
     pino({
@@ -31,14 +35,6 @@ export const setupServer = () => {
         target: 'pino-pretty',
       },
     }),
-  );
-
-  app.use('/api', commonRouter);
-
-  app.use('/api/auth', userRouter);
-  app.use(
-    'api/auth/avatar',
-    express.static(path.resolve('src', 'public/photos')),
   );
 
   app.use('*', notFoundHandler);
