@@ -7,14 +7,14 @@ const waterSchema = new Schema(
       required: true,
     },
     date: {
-      type: String,
+      type: Date,
       required: true,
     },
     currentDailyNorm: {
       type: Number,
       required: true,
     },
-    owner: {
+    userId: {
       type: Schema.Types.ObjectId,
       ref: 'Users',
     },
