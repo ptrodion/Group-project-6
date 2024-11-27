@@ -10,15 +10,11 @@ import {
 } from '../services/user.js';
 
 export const registerController = async (req, res) => {
-  const { name, email, password, gender, currentDailyNorm } = req.body;
+  // const { name, email, password, gender, currentDailyNorm } = req.body;
+  const { body } = req;
+  const file = req.file;
 
-  const registeredUser = await registerUser({
-    name,
-    email,
-    password,
-    gender,
-    currentDailyNorm,
-  });
+  const registeredUser = await registerUser(body, file);
 
   res.status(201).json({
     status: 201,
@@ -46,7 +42,9 @@ export const loginController = async (req, res) => {
   res.status(200).json({
     status: 200,
     message: 'Logged in successfully!',
-    accessToken: session.accessToken,
+    data: {
+      accessToken: session.accessToken,
+    },
   });
 };
 
@@ -88,7 +86,9 @@ export const refreshTokenController = async (req, res) => {
   res.status(200).json({
     status: 200,
     message: 'Session refreshed successfully!',
-    accessToken: session.accessToken,
+    data: {
+      accessToken: session.accessToken,
+    },
   });
 };
 
