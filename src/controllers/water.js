@@ -78,7 +78,7 @@ export const deleteWaterController = async (req, res, next) => {
 
 export const getWaterPerDayController = async (req, res, next) => {
   const userId = req.user; //from authMiddleware
-  const { date } = req.query; //from query parametrs
+  const { date } = req.params; //from query parametrs
 
   const { totalWater, allRecords } = await getWaterPerDay(userId, date);
 
@@ -94,7 +94,7 @@ export const getWaterPerDayController = async (req, res, next) => {
 
 export const getWaterPerMonthController = async (req, res, next) => {
   const userId = req.user;
-  const { date } = req.query;
+  const { date } = req.params;
 
   const result = await getWaterPerMonth(userId, date);
 
