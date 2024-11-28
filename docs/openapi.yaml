@@ -14,10 +14,11 @@ servers:
   - url: https://warettrack.onrender.com
 paths:
   /api/auth/register:
-    # get:
-    #   $ref: ../swagger/paths/user/get.yaml
     post:
-      $ref: ../swagger/paths/user/post.yaml
+      $ref: ../swagger/paths/user/registerPost.yaml
+  /api/auth/login:
+    post:
+      $ref: ../swagger/paths/user/loginPost.yaml
   # /contacts/{id}:
   #   get:
   #     $ref: ../swagger/paths/user/{id}/get.yaml

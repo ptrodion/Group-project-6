@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "version": "1.0.0",
-    "title": "Wter track",
+    "title": "Water track",
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -50,7 +50,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "example": "user@example.com",
+                    "example": "John@example.com",
                     "description": "User's email address"
                   },
                   "password": {
@@ -59,45 +59,15 @@
                     "example": "securePassword123",
                     "description": "User's password"
                   },
-                  "name": {
-                    "type": "string",
-                    "example": "John Doe",
-                    "description": "Optional user's name"
-                  },
-                  "gender": {
+                  "language": {
                     "type": "string",
                     "enum": [
-                      "woman",
-                      "man"
+                      "en",
+                      "de",
+                      "ua"
                     ],
-                    "default": "woman",
-                    "example": "woman",
-                    "description": "User's gender"
-                  },
-                  "currentDailyNorm": {
-                    "type": "integer",
-                    "minimum": 50,
-                    "maximum": 5000,
-                    "example": 1500,
-                    "description": "Daily water intake norm in milliliters"
-                  },
-                  "avatarUrl": {
-                    "type": "string",
-                    "format": "uri",
-                    "example": "https://example.com/avatar.jpg",
-                    "description": "Optional URL for the user's avatar"
-                  },
-                  "weight": {
-                    "type": "number",
-                    "minimum": 0,
-                    "example": 70,
-                    "description": "Optional user's weight in kilograms"
-                  },
-                  "activeTime": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "example": 120,
-                    "description": "Optional user's active time in minutes"
+                    "example": "en",
+                    "description": "User's preferred language"
                   }
                 }
               }
@@ -123,22 +93,68 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully created a contact!"
+                      "example": "User registered successfully!"
                     },
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/user"
+                      "required": [
+                        "email",
+                        "gender",
+                        "currentDailyNorm",
+                        "languages",
+                        "displayName"
+                      ],
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "John@example.com",
+                          "description": "User's email address"
+                        },
+                        "displayName": {
+                          "type": "string",
+                          "example": "Hello, John",
+                          "description": "Optional user's name"
+                        },
+                        "gender": {
+                          "type": "string",
+                          "enum": [
+                            "woman",
+                            "man"
+                          ],
+                          "default": "woman",
+                          "example": "woman",
+                          "description": "User's gender"
+                        },
+                        "currentDailyNorm": {
+                          "type": "integer",
+                          "minimum": 50,
+                          "maximum": 5000,
+                          "example": 1500,
+                          "description": "Daily water intake norm in milliliters"
+                        },
+                        "language": {
+                          "type": "string",
+                          "enum": [
+                            "en",
+                            "de",
+                            "ua"
+                          ],
+                          "example": "en",
+                          "description": "User's preferred language"
+                        }
+                      }
                     }
                   }
                 }
               }
             }
           },
-          "400": {
-            "$ref": "#/components/responses/400"
+          "409": {
+            "$ref": "#/components/responses/409"
           },
-          "401": {
-            "$ref": "#/components/responses/401"
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -151,97 +167,9 @@
         "scheme": "bearer"
       }
     },
-    "schemas": {
-      "user": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "example": "61e9f1f3e7b45c001ddc2e85",
-            "description": "Unique identifier of the user"
-          },
-          "name": {
-            "type": "string",
-            "example": "John Doe",
-            "description": "Name of the user"
-          },
-          "email": {
-            "type": "string",
-            "format": "email",
-            "example": "user@example.com",
-            "description": "User's email address"
-          },
-          "gender": {
-            "type": "string",
-            "enum": [
-              "woman",
-              "man"
-            ],
-            "example": "woman",
-            "description": "Gender of the user"
-          },
-          "weight": {
-            "type": "number",
-            "minimum": 0,
-            "example": 70,
-            "description": "User's weight in kilograms"
-          },
-          "activeTime": {
-            "type": "integer",
-            "minimum": 0,
-            "example": 120,
-            "description": "User's active time in minutes"
-          },
-          "currentDailyNorm": {
-            "type": "integer",
-            "minimum": 50,
-            "maximum": 5000,
-            "example": 1500,
-            "description": "Daily water intake norm in milliliters"
-          },
-          "avatarUrl": {
-            "type": "string",
-            "format": "uri",
-            "example": "https://example.com/avatar.jpg",
-            "description": "URL of the user's avatar"
-          },
-          "languages": {
-            "type": "string",
-            "enum": [
-              "En",
-              "Ge",
-              "Uk"
-            ],
-            "example": "En",
-            "description": "Preferred language of the user"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2023-11-28T12:34:56Z",
-            "description": "Timestamp of user creation"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2023-11-28T15:45:23Z",
-            "description": "Timestamp of last update to the user"
-          }
-        },
-        "required": [
-          "id",
-          "email",
-          "gender",
-          "currentDailyNorm",
-          "createdAt",
-          "updatedAt"
-        ]
-      }
-    },
     "responses": {
-      "400": {
-        "description": "Bad Request - Invalid or missing parameters",
+      "409": {
+        "description": "Email already in use",
         "content": {
           "application/json": {
             "schema": {
@@ -253,48 +181,35 @@
               "properties": {
                 "status": {
                   "type": "integer",
-                  "example": 400
+                  "example": 409
                 },
                 "message": {
                   "type": "string",
-                  "example": "Bad request, invalid or missing parameters"
+                  "example": "Email already in use"
                 }
               }
             }
           }
         }
       },
-      "401": {
-        "description": "Unauthorized Error",
+      "500": {
+        "description": "Server error",
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
               "required": [
                 "status",
-                "message",
-                "data"
+                "message"
               ],
               "properties": {
                 "status": {
                   "type": "integer",
-                  "example": 401
+                  "example": 500
                 },
                 "message": {
                   "type": "string",
-                  "example": "Unauthorized Error"
-                },
-                "data": {
-                  "type": "object",
-                  "required": [
-                    "message"
-                  ],
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Access token not provided"
-                    }
-                  }
+                  "example": "Internal server error"
                 }
               }
             }
