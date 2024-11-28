@@ -34,15 +34,13 @@ export const registerUser = async (payload, file) => {
 
   payload.password = await bcrypt.hash(payload.password, 10);
   if (file) {
-    const avatarTempPath = file.path; // шлях до тимчасового файлу
+    const avatarTempPath = file.path;
     const avatarFinalPath = path.resolve('src', 'public/photos', file.filename);
     const uploadsDir = path.resolve('src', 'public/photos');
     await fs.mkdir(uploadsDir, { recursive: true });
     try {
-      // Перемістити файл із тимчасової папки до постійної
       await fs.rename(avatarTempPath, avatarFinalPath);
 
-      // Додати шлях до аватара у payload
       payload.avatarUrl = `/photos/${file.filename}`;
     } catch (error) {
       console.error('Error handling avatar upload:', error);
@@ -102,8 +100,36 @@ export const getCurrentUser = async (userId) => {
 };
 
 export const updateUser = async (userId, updateData, file) => {
-  if (Object.keys(updateData).length === 0) {
+  if (Object.keys(updateData).length === 0 && !file) {
     throw createHttpError(400, 'No data to update');
+  }
+
+  if (file) {
+    const avatarFilename = `${Date.now()}-${file.originalname}`;
+    const avatarTempPath = file.path;
+    const avatarFinalPath = path.resolve(
+      'src',
+      'public/photos',
+      avatarFilename,
+    );
+
+    const user = await UsersCollection.findById(userId);
+    if (user && user.avatarUrl) {
+      const oldAvatarPath = path.resolve('src', 'public', user.avatarUrl);
+      try {
+        await fs.unlink(oldAvatarPath);
+      } catch (error) {
+        console.warn('Failed to delete old avatar:', error.message);
+      }
+    }
+
+    try {
+      await fs.rename(avatarTempPath, avatarFinalPath);
+      updateData.avatarUrl = `/photos/${avatarFilename}`;
+    } catch (error) {
+      console.error('Error handling avatar upload:', error);
+      throw createHttpError(500, 'Error processing avatar upload');
+    }
   }
 
   const updatedUser = await UsersCollection.findByIdAndUpdate(
@@ -114,38 +140,6 @@ export const updateUser = async (userId, updateData, file) => {
       runValidators: true,
     },
   );
-  if (file) {
-    const avatarFilename = `${Date.now()}-${file.originalname}`;
-    const avatarTempPath = file.path;
-    const avatarFinalPath = path.resolve(
-      'src',
-      'public/photos',
-      avatarFilename,
-    );
-
-    // Видалити старий аватар, якщо він є
-    if (updatedUser.avatarUrl) {
-      const oldAvatarPath = path.resolve(
-        'src',
-        'public/photos',
-        updatedUser.avatarUrl,
-      );
-      try {
-        await fs.unlink(oldAvatarPath);
-      } catch (error) {
-        console.warn('Failed to delete old avatar:', error.message);
-      }
-    }
-
-    // Перемістити новий аватар
-    try {
-      await fs.rename(avatarTempPath, avatarFinalPath);
-      updateData.avatarUrl = `/photos/${avatarFilename}`;
-    } catch (error) {
-      console.error('Error handling avatar upload:', error);
-      throw createHttpError(500, 'Error processing avatar upload');
-    }
-  }
 
   if (!updatedUser) {
     throw createHttpError(404, 'User not found');

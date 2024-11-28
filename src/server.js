@@ -25,7 +25,7 @@ export const setupServer = () => {
   app.use('/api', commonRouter);
   app.use('/api/auth', userRouter);
   app.use(
-    'api/auth/avatar',
+    'api/auth/avatarUrl',
     express.static(path.resolve('src', 'public/photos')),
   );
   app.use('/api', waterRouter);

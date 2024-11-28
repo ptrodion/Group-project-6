@@ -26,7 +26,7 @@ const userSchema = new Schema(
     weight: { type: Number, default: 0 },
     activeTime: { type: Number, default: 0 }, // у хвилинах
     currentDailyNorm: { type: Number, default: 1500 }, // денна норма води в мілілітрах
-    languages: { type: String, enum: ['En', 'Ge', 'Uk'], default: 'En' },
+    languages: { type: String, enum: ['en', 'de', 'ua'], default: 'en' },
   },
   {
     timestamps: true,
@@ -41,15 +41,6 @@ userSchema.virtual('displayName').get(function () {
   return undefined;
 }); // для того щоб, якщо не ввели імя, було написано початок електронної пошти
 
-userSchema.set('toJSON', {
-  transform: function (doc, ret) {
-    ret.id = ret._id.toString();
-    delete ret._id; // Прибираємо _id, щоб уникнути дублювання
-    delete ret.__v; // Прибираємо версію документа
-    return ret;
-  },
-  virtuals: true,
-});
 userSchema.set('toObject', { virtuals: true }); // для того щоб, якщо не ввели імя, було написано початок електронної пошти
 
 userSchema.methods.toJSON = function (doc, ret) {
