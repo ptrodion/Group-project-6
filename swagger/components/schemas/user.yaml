@@ -1,0 +1,69 @@
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: "61e9f1f3e7b45c001ddc2e85"
+      description: Unique identifier of the user
+    name:
+      type: string
+      example: John Doe
+      description: Name of the user
+    email:
+      type: string
+      format: email
+      example: user@example.com
+      description: User's email address
+    gender:
+      type: string
+      enum:
+        - woman
+        - man
+      example: woman
+      description: Gender of the user
+    weight:
+      type: number
+      minimum: 0
+      example: 70
+      description: User's weight in kilograms
+    activeTime:
+      type: integer
+      minimum: 0
+      example: 120
+      description: User's active time in minutes
+    currentDailyNorm:
+      type: integer
+      minimum: 50
+      maximum: 5000
+      example: 1500
+      description: Daily water intake norm in milliliters
+    avatarUrl:
+      type: string
+      format: uri
+      example: "https://example.com/avatar.jpg"
+      description: URL of the user's avatar
+    languages:
+      type: string
+      enum:
+        - En
+        - Ge
+        - Uk
+      example: En
+      description: Preferred language of the user
+    createdAt:
+      type: string
+      format: date-time
+      example: "2023-11-28T12:34:56Z"
+      description: Timestamp of user creation
+    updatedAt:
+      type: string
+      format: date-time
+      example: "2023-11-28T15:45:23Z"
+      description: Timestamp of last update to the user
+  required:
+    - id
+    - email
+    - gender
+    - currentDailyNorm
+    - createdAt
+    - updatedAt

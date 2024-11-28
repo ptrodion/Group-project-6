@@ -1,0 +1,89 @@
+tags:
+  - User
+summary: Register user
+operationId: registerUser
+description: 'Register a new user in the system'
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            type: string
+            format: email
+            example: user@example.com
+            description: User's email address
+          password:
+            type: string
+            format: password
+            example: "securePassword123"
+            description: User's password
+          name:
+            type: string
+            example: John Doe
+            description: Optional user's name
+          gender:
+            type: string
+            enum:
+              - woman
+              - man
+            example: woman
+            description: User's gender
+          currentDailyNorm:
+            type: integer
+            minimum: 50
+            maximum: 5000
+            example: 1500
+            description: Daily water intake norm in milliliters
+          avatarUrl:
+            type: string
+            format: uri
+            example: "https://example.com/avatar.jpg"
+            description: Optional URL for the user's avatar
+          weight:
+            type: number
+            minimum: 0
+            example: 70
+            description: Optional user's weight in kilograms
+          activeTime:
+            type: integer
+            minimum: 0
+            example: 120
+            description: Optional user's active time in minutes
+responses:
+  '200':
+    description: User registered successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            token:
+              type: string
+              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              description: Authentication token for the registered user
+  '400':
+    description: Invalid request payload
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Email is required"
+  '500':
+    description: Server error
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: "Internal server error"

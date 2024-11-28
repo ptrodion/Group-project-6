@@ -1,0 +1,32 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Water track
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: Application for monitoring water consumption
+tags:
+  - name: Authentication
+    description: Operations about Authentication.
+servers:
+  - url: http://localhost:3002
+  - url: https://warettrack.onrender.com
+paths:
+  /api/auth/register:
+    # get:
+    #   $ref: ../swagger/paths/user/get.yaml
+    post:
+      $ref: ../swagger/paths/user/post.yaml
+  # /contacts/{id}:
+  #   get:
+  #     $ref: ../swagger/paths/user/{id}/get.yaml
+  #   patch:
+  #     $ref: ../swagger/paths/user/{id}/patch.yaml
+  #   delete:
+  #     $ref: ../swagger/paths/user/{id}/delete.yaml
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

@@ -5,6 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "npm run build-docs",
+    "build-docs": "redocly bundle --ext json -o docs/swagger.json",
+    "preview-docs": "redocly preview-docs",
     "lint": "eslint src/**/*.js",
     "start": "node ./src/index.js",
     "dev": "nodemon src/index.js"
@@ -30,7 +33,7 @@
     "express": "4.21.1",
     "helmet": "8.0.0",
     "http-errors": "2.0.0",
-    "joi": "^17.13.3",
+    "joi": "17.13.3",
     "jsonwebtoken": "9.0.2",
     "mongoose": "8.8.2",
     "multer": "1.4.5-lts.1",
