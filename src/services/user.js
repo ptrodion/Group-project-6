@@ -3,9 +3,57 @@ import crypto from 'crypto';
 import createHttpError from 'http-errors';
 import fs from 'fs/promises';
 import path from 'node:path';
+import cloudinary from 'cloudinary';
 
 import { UsersCollection } from '../db/models/user.js';
 import { SessionCollection } from '../db/models/session.js';
+
+import { uploadToCloudinary } from '../utils/uploadToCloudinary.js';
+
+const saveAvatar = async (file) => {
+  let cloudinaryUrl = null;
+  let localUrl = null;
+
+  if (
+    process.env.STORAGE_TYPE === 'cloudinary' ||
+    process.env.STORAGE_TYPE === 'both'
+  ) {
+    const result = await uploadToCloudinary(file.path);
+    cloudinaryUrl = result.secure_url;
+  }
+
+  if (
+    process.env.STORAGE_TYPE === 'local' ||
+    process.env.STORAGE_TYPE === 'both'
+  ) {
+    const uploadsDir = path.resolve('src', 'public/photos');
+    await fs.mkdir(uploadsDir, { recursive: true });
+
+    const avatarFilename = `${Date.now()}-${file.originalname}`;
+    const avatarFinalPath = path.resolve(uploadsDir, avatarFilename);
+
+    await fs.rename(file.path, avatarFinalPath);
+    localUrl = `/photos/${avatarFilename}`;
+  }
+
+  return { cloudinaryUrl, localUrl };
+};
+
+const deleteAvatar = async (avatarUrl, storageType) => {
+  // if (!avatarUrl) return;
+
+  try {
+    if (storageType === 'cloudinary') {
+      const publicId = avatarUrl.split('/').slice(-1)[0].split('.')[0];
+      await cloudinary.v2.uploader.destroy(publicId);
+    } else if (storageType === 'local') {
+      const filePath = path.resolve('src', 'public', avatarUrl);
+      await fs.unlink(filePath);
+    }
+  } catch (error) {
+    console.warn('Failed to delete avatar:', error.message);
+  }
+};
 
 const createSession = () => {
   const accessToken = crypto.randomBytes(30).toString('base64');
@@ -33,20 +81,14 @@ export const registerUser = async (payload, file) => {
   }
 
   payload.password = await bcrypt.hash(payload.password, 10);
-  if (file) {
-    const avatarTempPath = file.path;
-    const avatarFinalPath = path.resolve('src', 'public/photos', file.filename);
-    const uploadsDir = path.resolve('src', 'public/photos');
-    await fs.mkdir(uploadsDir, { recursive: true });
-    try {
-      await fs.rename(avatarTempPath, avatarFinalPath);
 
-      payload.avatarUrl = `/photos/${file.filename}`;
-    } catch (error) {
-      console.error('Error handling avatar upload:', error);
-      throw createHttpError(500, 'Error processing avatar upload');
-    }
+  if (file) {
+    const { cloudinaryUrl, localUrl } = await saveAvatar(file);
+
+    payload.avatarUrlCloudinary = cloudinaryUrl;
+    payload.avatarUrlLocal = localUrl;
   }
+
   return UsersCollection.create(payload);
 };
 
@@ -104,32 +146,24 @@ export const updateUser = async (userId, updateData, file) => {
     throw createHttpError(400, 'No data to update');
   }
 
+  const user = await UsersCollection.findById(userId);
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
   if (file) {
-    const avatarFilename = `${Date.now()}-${file.originalname}`;
-    const avatarTempPath = file.path;
-    const avatarFinalPath = path.resolve(
-      'src',
-      'public/photos',
-      avatarFilename,
-    );
-
-    const user = await UsersCollection.findById(userId);
-    if (user && user.avatarUrl) {
-      const oldAvatarPath = path.resolve('src', 'public', user.avatarUrl);
-      try {
-        await fs.unlink(oldAvatarPath);
-      } catch (error) {
-        console.warn('Failed to delete old avatar:', error.message);
-      }
+    if (user.avatarUrlCloudinary) {
+      await deleteAvatar(user.avatarUrlCloudinary, 'cloudinary');
     }
 
-    try {
-      await fs.rename(avatarTempPath, avatarFinalPath);
-      updateData.avatarUrl = `/photos/${avatarFilename}`;
-    } catch (error) {
-      console.error('Error handling avatar upload:', error);
-      throw createHttpError(500, 'Error processing avatar upload');
+    if (user.avatarUrlLocal) {
+      await deleteAvatar(user.avatarUrlLocal, 'local');
     }
+
+    const { cloudinaryUrl, localUrl } = await saveAvatar(file);
+
+    updateData.avatarUrlCloudinary = cloudinaryUrl;
+    updateData.avatarUrlLocal = localUrl;
   }
 
   const updatedUser = await UsersCollection.findByIdAndUpdate(
@@ -144,6 +178,8 @@ export const updateUser = async (userId, updateData, file) => {
   if (!updatedUser) {
     throw createHttpError(404, 'User not found');
   }
-
+  // console.log(updatedUser);
+  // console.log(userId);
+  // console.log(updateData);
   return updatedUser;
 };

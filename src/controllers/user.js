@@ -59,6 +59,7 @@ export const getCurrentUserController = async (req, res) => {
 
 export const updateCurrentUserController = async (req, res) => {
   const updateData = req.body;
+  console.log(req.body);
   const file = req.file;
   const updatedUser = await updateUser(req.user, updateData, file);
   res.status(200).json({
