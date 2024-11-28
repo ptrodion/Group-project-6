@@ -6,6 +6,7 @@ description: 'Register a new user in the system'
 security:
   - bearerAuth: []
 requestBody:
+  required: true
   content:
     application/json:
       schema:
@@ -17,7 +18,7 @@ requestBody:
           email:
             type: string
             format: email
-            example: John@example.com
+            example: john@example.com
             description: User's email address
           password:
             type: string
@@ -32,39 +33,6 @@ requestBody:
               - ua
             example: "en"
             description: User's preferred language
-          # name:
-          #   type: string
-          #   example: Hello, John
-          #   description: Optional user's name
-          # gender:
-          #   type: string
-          #   enum:
-          #     - woman
-          #     - man
-          #   default: woman
-          #   example: woman
-          #   description: User's gender
-          # currentDailyNorm:
-          #   type: integer
-          #   minimum: 50
-          #   maximum: 5000
-          #   example: 1500
-          #   description: Daily water intake norm in milliliters
-          # avatarUrl:
-          #   type: string
-          #   format: uri
-          #   example: "https://example.com/avatar.jpg"
-          #   description: Optional URL for the user's avatar
-          # weight:
-          #   type: number
-          #   minimum: 0
-          #   example: 70
-          #   description: Optional user's weight in kilograms
-          # activeTime:
-          #   type: integer
-          #   minimum: 0
-          #   example: 120
-          #   description: Optional user's active time in minutes
 responses:
   '201':
     description: Contact successfully created
@@ -95,7 +63,7 @@ responses:
                 email:
                   type: string
                   format: email
-                  example: John@example.com
+                  example: "john@example.com"
                   description: User's email address
                 displayName:
                   type: string
