@@ -99,11 +99,7 @@
                     "data": {
                       "type": "object",
                       "required": [
-                        "email",
-                        "gender",
-                        "currentDailyNorm",
-                        "languages",
-                        "displayName"
+                        "email"
                       ],
                       "properties": {
                         "email": {
@@ -111,38 +107,6 @@
                           "format": "email",
                           "example": "john@example.com",
                           "description": "User's email address"
-                        },
-                        "displayName": {
-                          "type": "string",
-                          "example": "Hello, John",
-                          "description": "Optional user's name"
-                        },
-                        "gender": {
-                          "type": "string",
-                          "enum": [
-                            "woman",
-                            "man"
-                          ],
-                          "default": "woman",
-                          "example": "woman",
-                          "description": "User's gender"
-                        },
-                        "currentDailyNorm": {
-                          "type": "integer",
-                          "minimum": 50,
-                          "maximum": 5000,
-                          "example": 1500,
-                          "description": "Daily water intake norm in milliliters"
-                        },
-                        "language": {
-                          "type": "string",
-                          "enum": [
-                            "en",
-                            "de",
-                            "ua"
-                          ],
-                          "example": "en",
-                          "description": "User's preferred language"
                         }
                       }
                     }
