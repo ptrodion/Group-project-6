@@ -1,4 +1,3 @@
-
 import { Router } from 'express';
 
 import {
@@ -20,7 +19,6 @@ import {
 // import { isValidId } from '../middlewares/isValidId.js';
 import { upload } from '../middlewares/multer.js';
 
-
 const userRouter = Router();
 
 userRouter.post(
@@ -36,7 +34,7 @@ userRouter.post(
 );
 
 userRouter.get(
-  '/find-one-user',
+  '/current',
   // isValidId,
   upload.single('avatarUrl'),
   authMiddleware,

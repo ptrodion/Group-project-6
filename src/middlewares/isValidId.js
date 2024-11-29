@@ -2,9 +2,9 @@ import { isValidObjectId } from 'mongoose';
 import createHttpError from 'http-errors';
 
 export const isValidId = async (req, res, next) => {
-  const { userId } = req.params;
+  const { waterId } = req.params;
 
-  if (isValidObjectId(userId) !== true) {
+  if (isValidObjectId(waterId) !== true) {
     return next(createHttpError(400, `ID is not valid`));
   }
 

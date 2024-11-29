@@ -11,10 +11,14 @@ import {
 
 export const registerController = async (req, res) => {
   const { email, password } = req.body;
-  const { body } = req;
+
   const file = req.file;
 
-  const registeredUser = await registerUser(email,password, file);
+  const registeredUser = await registerUser({
+    email,
+    password,
+    file,
+  });
 
   res.status(201).json({
     status: 201,
@@ -59,7 +63,11 @@ export const getCurrentUserController = async (req, res) => {
 
 export const updateCurrentUserController = async (req, res) => {
   const updateData = req.body;
-  const updatedUser = await updateUser(req.user, updateData);
+
+  const file = req.file;
+
+  const updatedUser = await updateUser(req.user, updateData, file);
+
   res.status(200).json({
     status: 200,
     message: 'User updated successfully!',

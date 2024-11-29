@@ -80,13 +80,13 @@ export const getWaterPerDayController = async (req, res, next) => {
   const userId = req.user; //from authMiddleware
   const { date } = req.params; //from query parametrs
 
-  const { totalWater, allRecords } = await getWaterPerDay(userId, date);
+  const { totalAmount, allRecords } = await getWaterPerDay(userId, date);
 
   res.status(200).json({
     status: 200,
     message: 'Successfully retrieved daily water records!',
     data: {
-      totalWater,
+      totalAmount,
       records: allRecords,
     },
   });
