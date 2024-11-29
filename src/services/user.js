@@ -40,7 +40,7 @@ const saveAvatar = async (file) => {
 };
 
 const deleteAvatar = async (avatarUrl, storageType) => {
-  // if (!avatarUrl) return;
+  if (!avatarUrl) return;
 
   try {
     if (storageType === 'cloudinary') {
@@ -73,7 +73,14 @@ const createAndSaveSession = async (userId) => {
   return await SessionCollection.create({ userId, ...newSession });
 };
 
+const capitalizeName = (name) => {
+  if (!name) return '';
+  return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+};
+
 export const registerUser = async (payload, file) => {
+  payload.email = payload.email.toLowerCase();
+
   const userExists = await UsersCollection.findOne({ email: payload.email });
 
   if (userExists) {
@@ -81,6 +88,10 @@ export const registerUser = async (payload, file) => {
   }
 
   payload.password = await bcrypt.hash(payload.password, 10);
+
+  if (payload.name) {
+    payload.name = capitalizeName(payload.name); // ім'я з великої літери
+  }
 
   if (file) {
     const { cloudinaryUrl, localUrl } = await saveAvatar(file);
@@ -93,7 +104,7 @@ export const registerUser = async (payload, file) => {
 };
 
 export const loginUser = async (email, password) => {
-  const user = await UsersCollection.findOne({ email });
+  const user = await UsersCollection.findOne({ email: email.toLowerCase() });
 
   if (!user) {
     throw createHttpError(401, 'Invalid credentials');
@@ -150,7 +161,9 @@ export const updateUser = async (userId, updateData, file) => {
   if (!user) {
     throw createHttpError(404, 'User not found');
   }
-
+  if (updateData.name) {
+    updateData.name = capitalizeName(updateData.name);
+  }
   if (file) {
     if (user.avatarUrlCloudinary) {
       await deleteAvatar(user.avatarUrlCloudinary, 'cloudinary');
@@ -178,8 +191,6 @@ export const updateUser = async (userId, updateData, file) => {
   if (!updatedUser) {
     throw createHttpError(404, 'User not found');
   }
-  // console.log(updatedUser);
-  // console.log(userId);
-  // console.log(updateData);
+
   return updatedUser;
 };

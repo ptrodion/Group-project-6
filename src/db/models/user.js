@@ -33,7 +33,7 @@ const userSchema = new Schema(
     weight: { type: Number, default: 0 },
     activeTime: { type: Number, default: 0 }, // у хвилинах
     currentDailyNorm: { type: Number, default: 1500 }, // денна норма води в мілілітрах
-    languages: { type: String, enum: ['en', 'de', 'ua'], default: 'en' },
+    language: { type: String, enum: ['en', 'de', 'ua'], default: 'en' },
   },
   {
     timestamps: true,
@@ -43,9 +43,15 @@ const userSchema = new Schema(
 
 userSchema.virtual('displayName').get(function () {
   if (!this.name || this.name.trim() === '') {
-    return `Hello, ${this.email.split('@')[0]}`;
+    const emailPrefix = this.email.split('@')[0];
+    return `Hello, ${
+      emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1).toLowerCase()
+    }`;
   }
-  return undefined;
+
+  return `Hello, ${
+    this.name.charAt(0).toUpperCase() + this.name.slice(1).toLowerCase()
+  }`;
 }); // для того щоб, якщо не ввели імя, було написано початок електронної пошти
 
 userSchema.set('toObject', { virtuals: true }); // для того щоб, якщо не ввели імя, було написано початок електронної пошти

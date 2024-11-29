@@ -10,11 +10,18 @@ import {
 } from '../services/user.js';
 
 export const registerController = async (req, res) => {
-  // const { name, email, password, gender, currentDailyNorm } = req.body;
-  const { body } = req;
+  const { name, email, password, gender, currentDailyNorm } = req.body;
+
   const file = req.file;
 
-  const registeredUser = await registerUser(body, file);
+  const registeredUser = await registerUser({
+    name,
+    email,
+    password,
+    gender,
+    currentDailyNorm,
+    file,
+  });
 
   res.status(201).json({
     status: 201,
@@ -59,9 +66,11 @@ export const getCurrentUserController = async (req, res) => {
 
 export const updateCurrentUserController = async (req, res) => {
   const updateData = req.body;
-  console.log(req.body);
+
   const file = req.file;
+
   const updatedUser = await updateUser(req.user, updateData, file);
+
   res.status(200).json({
     status: 200,
     message: 'User updated successfully!',
