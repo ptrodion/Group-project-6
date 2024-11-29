@@ -77,29 +77,26 @@ export const deleteWaterById = async (waterId, userId) => {
 
 //get all records of water consumption per day
 
-export const getWaterPerDay = async (userId, timestamp) => {
-  const date = new Date(parseInt(timestamp));
+export const getWaterPerDay = async (userId, date) => {
+  // convert the date string to Date object
+  const dateObj = new Date(date);
 
-  const startOfDay = new Date(date);
+  // get the start of the day (00:00:00)
+  const startOfDay = new Date(dateObj);
   startOfDay.setUTCHours(0, 0, 0, 0);
 
-
-  const endOfDay = new Date(date);
+  // get the end of the day (23:59:59.999)
+  const endOfDay = new Date(dateObj);
   endOfDay.setUTCHours(23, 59, 59, 999);
 
-   // Convert back to Unix timestamp
-   const startOfDayTimestamp = startOfDay.getTime();
-   const endOfDayTimestamp = endOfDay.getTime();
+  // convert to ISO strings for filtering in  MongoDB
+  const startOfDayISO = startOfDay.toISOString();
+  const endOfDayISO = endOfDay.toISOString();
 
-  console.log('Start of Day:', startOfDay);
-  console.log('End of Day:', endOfDay);
-
+  // water records for the day
   const waterRecords = await WaterCollection.find({
     userId,
-    date: {
-      $gte: startOfDayTimestamp,
-      $lte: endOfDayTimestamp,
-    },
+    date: { $gte: startOfDayISO, $lte: endOfDayISO },
   }).lean();
 
   if (!waterRecords || waterRecords.length === 0) {
@@ -114,9 +111,9 @@ export const getWaterPerDay = async (userId, timestamp) => {
     amount: record.amount,
     date: record.date,
     currentDailyNorm: record.currentDailyNorm,
-       }));
+  }));
 
-  const totalAmount = waterRecords.reduce((acc, curr) => acc + (curr.amount || 0), 0);
+ const totalAmount = waterRecords.reduce((acc, curr) => acc + curr.amount, 0);
 
   return {
     allRecords,
@@ -127,18 +124,15 @@ export const getWaterPerDay = async (userId, timestamp) => {
 //get water consumption per month
 
 export const getWaterPerMonth = async (userId, date) => {
-  // Начало месяца
+  // start of the month
   const startOfMonth = new Date(`${date}-01T00:00:00.000Z`).toISOString();
 
-  // Конец месяца
+  // end of the month
   const endOfMonth = new Date(`${date}-01T00:00:00.000Z`);
-  endOfMonth.setUTCMonth(endOfMonth.getUTCMonth() + 1); // Переход на следующий месяц
-  endOfMonth.setUTCDate(0); // Последний день предыдущего месяца
-  endOfMonth.setUTCHours(23, 59, 59, 999); // Конец дня
+  endOfMonth.setUTCMonth(endOfMonth.getUTCMonth() + 1); // move to next month
+  endOfMonth.setUTCDate(0); // last day of a previous month
+  endOfMonth.setUTCHours(23, 59, 59, 999); // end of the day
   const endOfMonthISO = endOfMonth.toISOString();
-
-  console.log('Start of Month:', startOfMonth);
-  console.log('End of Month:', endOfMonthISO);
 
   const waterRecords = await WaterCollection.find({
     userId,
