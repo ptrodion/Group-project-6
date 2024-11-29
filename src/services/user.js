@@ -82,6 +82,8 @@ export const registerUser = async (payload, file) => {
   payload.email = payload.email.toLowerCase();
 
   const userExists = await UsersCollection.findOne({ email: payload.email });
+export const registerUser = async (email,password, file) => {
+  const userExists = await UsersCollection.findOne({ emaill });
 
   if (userExists) {
     throw createHttpError(409, 'Email already in use');
