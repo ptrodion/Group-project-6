@@ -80,15 +80,16 @@ export const deleteWaterById = async (waterId, userId) => {
 export const getWaterPerDay = async (userId, date) => {
   // convert the date string to Date object
   const dateObj = new Date(date);
-
+console.log("dateObj", dateObj);
   // get the start of the day (00:00:00)
   const startOfDay = new Date(dateObj);
   startOfDay.setUTCHours(0, 0, 0, 0);
+  console.log("startDay",  startOfDay);
 
   // get the end of the day (23:59:59.999)
   const endOfDay = new Date(dateObj);
   endOfDay.setUTCHours(23, 59, 59, 999);
-
+  console.log("entDay", endOfDay);
   // convert to ISO strings for filtering in  MongoDB
   const startOfDayISO = startOfDay.toISOString();
   const endOfDayISO = endOfDay.toISOString();
