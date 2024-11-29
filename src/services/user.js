@@ -78,10 +78,13 @@ const capitalizeName = (name) => {
   return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 };
 
-export const registerUser = async (payload, file) => {
+export const registerUser = async (payload, file, language) => {
+  console.log('Payload before validation:', payload);
   payload.email = payload.email.toLowerCase();
 
-  const userExists = await UsersCollection.findOne({ email: payload.email });
+  const userExists = await UsersCollection.findOne({
+    email: payload.email,
+  });
 
   if (userExists) {
     throw createHttpError(409, 'Email already in use');
