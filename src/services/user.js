@@ -25,14 +25,14 @@ const createAndSaveSession = async (userId) => {
   return await SessionCollection.create({ userId, ...newSession });
 };
 
-export const registerUser = async (payload, file) => {
-  const userExists = await UsersCollection.findOne({ email: payload.email });
+export const registerUser = async (email,password, file) => {
+  const userExists = await UsersCollection.findOne({ emaill });
 
   if (userExists) {
     throw createHttpError(409, 'Email already in use');
   }
 
-  payload.password = await bcrypt.hash(payload.password, 10);
+  password = await bcrypt.hash(password, 10);
   if (file) {
     const avatarTempPath = file.path; // шлях до тимчасового файлу
     const avatarFinalPath = path.resolve('src', 'public/photos', file.filename);

@@ -29,7 +29,7 @@ responses:
   '200':
     description: Logged in successfully!
     content:
-      multipart/form-data:
+      application/json:
         schema:
           type: object
           required:
