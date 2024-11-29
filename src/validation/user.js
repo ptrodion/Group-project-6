@@ -32,7 +32,8 @@ export const registerUserSchema = Joi.object({
       'number.min': 'CurrentDailyNorm must be at least 50',
       'number.max': 'CurrentDailyNorm must be at most 5000',
     }),
-  avatarUrl: Joi.string().optional(),
+  avatarUrlCloudinary: Joi.string().optional(),
+  avatarUrlLocal: Joi.string().optional(),
   weight: Joi.number().integer().min(0).optional().messages({
     'number.integer': 'Weight must be an integer',
     'number.min': 'Weight cannot be less than 0',
@@ -41,6 +42,7 @@ export const registerUserSchema = Joi.object({
     'number.integer': 'ActiveTime must be an integer',
     'number.min': 'ActiveTime cannot be less than 0',
   }),
+  languages: Joi.string().valid('en', 'de', 'ua'),
 });
 
 export const loginUserSchema = Joi.object({
@@ -82,7 +84,8 @@ export const updateCurrentUserSchema = Joi.object({
     'number.min': 'CurrentDailyNorm must be at least 50',
     'number.max': 'CurrentDailyNorm must be at most 5000',
   }),
-  avatarUrl: Joi.string(),
+  avatarUrlCloudinary: Joi.string(),
+  avatarUrlLocal: Joi.string(),
   weight: Joi.number().integer().min(0).messages({
     'number.integer': 'Weight must be an integer',
     'number.min': 'Weight cannot be less than 0',
@@ -91,4 +94,5 @@ export const updateCurrentUserSchema = Joi.object({
     'number.integer': 'ActiveTime must be an integer',
     'number.min': 'ActiveTime cannot be less than 0',
   }),
+  languages: Joi.string().valid('en', 'de', 'ua'),
 });

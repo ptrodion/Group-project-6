@@ -3,9 +3,57 @@ import crypto from 'crypto';
 import createHttpError from 'http-errors';
 import fs from 'fs/promises';
 import path from 'node:path';
+import cloudinary from 'cloudinary';
 
 import { UsersCollection } from '../db/models/user.js';
 import { SessionCollection } from '../db/models/session.js';
+
+import { uploadToCloudinary } from '../utils/uploadToCloudinary.js';
+
+const saveAvatar = async (file) => {
+  let cloudinaryUrl = null;
+  let localUrl = null;
+
+  if (
+    process.env.STORAGE_TYPE === 'cloudinary' ||
+    process.env.STORAGE_TYPE === 'both'
+  ) {
+    const result = await uploadToCloudinary(file.path);
+    cloudinaryUrl = result.secure_url;
+  }
+
+  if (
+    process.env.STORAGE_TYPE === 'local' ||
+    process.env.STORAGE_TYPE === 'both'
+  ) {
+    const uploadsDir = path.resolve('src', 'public/photos');
+    await fs.mkdir(uploadsDir, { recursive: true });
+
+    const avatarFilename = `${Date.now()}-${file.originalname}`;
+    const avatarFinalPath = path.resolve(uploadsDir, avatarFilename);
+
+    await fs.rename(file.path, avatarFinalPath);
+    localUrl = `/photos/${avatarFilename}`;
+  }
+
+  return { cloudinaryUrl, localUrl };
+};
+
+const deleteAvatar = async (avatarUrl, storageType) => {
+  if (!avatarUrl) return;
+
+  try {
+    if (storageType === 'cloudinary') {
+      const publicId = avatarUrl.split('/').slice(-1)[0].split('.')[0];
+      await cloudinary.v2.uploader.destroy(publicId);
+    } else if (storageType === 'local') {
+      const filePath = path.resolve('src', 'public', avatarUrl);
+      await fs.unlink(filePath);
+    }
+  } catch (error) {
+    console.warn('Failed to delete avatar:', error.message);
+  }
+};
 
 const createSession = () => {
   const accessToken = crypto.randomBytes(30).toString('base64');
@@ -25,7 +73,14 @@ const createAndSaveSession = async (userId) => {
   return await SessionCollection.create({ userId, ...newSession });
 };
 
+const capitalizeName = (name) => {
+  if (!name) return '';
+  return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+};
+
 export const registerUser = async (payload, file) => {
+  payload.email = payload.email.toLowerCase();
+
   const userExists = await UsersCollection.findOne({ email: payload.email });
 
   if (userExists) {
@@ -33,27 +88,23 @@ export const registerUser = async (payload, file) => {
   }
 
   payload.password = await bcrypt.hash(payload.password, 10);
-  if (file) {
-    const avatarTempPath = file.path; // шлях до тимчасового файлу
-    const avatarFinalPath = path.resolve('src', 'public/photos', file.filename);
-    const uploadsDir = path.resolve('src', 'public/photos');
-    await fs.mkdir(uploadsDir, { recursive: true });
-    try {
-      // Перемістити файл із тимчасової папки до постійної
-      await fs.rename(avatarTempPath, avatarFinalPath);
 
-      // Додати шлях до аватара у payload
-      payload.avatarUrl = `/photos/${file.filename}`;
-    } catch (error) {
-      console.error('Error handling avatar upload:', error);
-      throw createHttpError(500, 'Error processing avatar upload');
-    }
+  if (payload.name) {
+    payload.name = capitalizeName(payload.name); // ім'я з великої літери
   }
+
+  if (file) {
+    const { cloudinaryUrl, localUrl } = await saveAvatar(file);
+
+    payload.avatarUrlCloudinary = cloudinaryUrl;
+    payload.avatarUrlLocal = localUrl;
+  }
+
   return UsersCollection.create(payload);
 };
 
 export const loginUser = async (email, password) => {
-  const user = await UsersCollection.findOne({ email });
+  const user = await UsersCollection.findOne({ email: email.toLowerCase() });
 
   if (!user) {
     throw createHttpError(401, 'Invalid credentials');
@@ -102,8 +153,30 @@ export const getCurrentUser = async (userId) => {
 };
 
 export const updateUser = async (userId, updateData, file) => {
-  if (Object.keys(updateData).length === 0) {
+  if (Object.keys(updateData).length === 0 && !file) {
     throw createHttpError(400, 'No data to update');
+  }
+
+  const user = await UsersCollection.findById(userId);
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+  if (updateData.name) {
+    updateData.name = capitalizeName(updateData.name);
+  }
+  if (file) {
+    if (user.avatarUrlCloudinary) {
+      await deleteAvatar(user.avatarUrlCloudinary, 'cloudinary');
+    }
+
+    if (user.avatarUrlLocal) {
+      await deleteAvatar(user.avatarUrlLocal, 'local');
+    }
+
+    const { cloudinaryUrl, localUrl } = await saveAvatar(file);
+
+    updateData.avatarUrlCloudinary = cloudinaryUrl;
+    updateData.avatarUrlLocal = localUrl;
   }
 
   const updatedUser = await UsersCollection.findByIdAndUpdate(
@@ -114,38 +187,6 @@ export const updateUser = async (userId, updateData, file) => {
       runValidators: true,
     },
   );
-  if (file) {
-    const avatarFilename = `${Date.now()}-${file.originalname}`;
-    const avatarTempPath = file.path;
-    const avatarFinalPath = path.resolve(
-      'src',
-      'public/photos',
-      avatarFilename,
-    );
-
-    // Видалити старий аватар, якщо він є
-    if (updatedUser.avatarUrl) {
-      const oldAvatarPath = path.resolve(
-        'src',
-        'public/photos',
-        updatedUser.avatarUrl,
-      );
-      try {
-        await fs.unlink(oldAvatarPath);
-      } catch (error) {
-        console.warn('Failed to delete old avatar:', error.message);
-      }
-    }
-
-    // Перемістити новий аватар
-    try {
-      await fs.rename(avatarTempPath, avatarFinalPath);
-      updateData.avatarUrl = `/photos/${avatarFilename}`;
-    } catch (error) {
-      console.error('Error handling avatar upload:', error);
-      throw createHttpError(500, 'Error processing avatar upload');
-    }
-  }
 
   if (!updatedUser) {
     throw createHttpError(404, 'User not found');

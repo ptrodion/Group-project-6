@@ -6,10 +6,7 @@
 .DS_Store
 .idea
 
-src/tmp/*
-!src/tmp/.gitkeep
-src/public/photos/*
-!src/public/photos/.gitkeep
+
 
 
 
