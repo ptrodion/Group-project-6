@@ -11,6 +11,7 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import commonRouter from './routers/common.js';
 import userRouter from './routers/user.js';
 import waterRouter from './routers/water.js';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 export const setupServer = () => {
   const app = express();
@@ -26,6 +27,7 @@ export const setupServer = () => {
   app.use('/api/auth', userRouter);
   app.use('/photos', express.static(path.resolve('src', 'public/photos')));
   app.use('/api', waterRouter);
+  app.use('/api-docs', swaggerDocs());
   app.use(
     pino({
       transport: {
