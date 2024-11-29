@@ -10,7 +10,7 @@ import {
 } from '../services/user.js';
 
 export const registerController = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, language } = req.body;
 
   const file = req.file;
 
@@ -18,6 +18,7 @@ export const registerController = async (req, res) => {
     email,
     password,
     file,
+    language,
   });
 
   res.status(201).json({
