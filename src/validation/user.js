@@ -42,7 +42,7 @@ export const registerUserSchema = Joi.object({
   //   'number.integer': 'ActiveTime must be an integer',
   //   'number.min': 'ActiveTime cannot be less than 0',
   // }),
-  // languages: Joi.string().valid('en', 'de', 'ua'),
+  language: Joi.string().valid('en', 'de', 'ua').optional(),
 });
 
 export const loginUserSchema = Joi.object({
@@ -100,5 +100,5 @@ export const updateCurrentUserSchema = Joi.object({
     'number.integer': 'ActiveTime must be an integer',
     'number.min': 'ActiveTime cannot be less than 0',
   }),
-  languages: Joi.string().valid('en', 'de', 'ua'),
+  language: Joi.string().valid('en', 'de', 'ua'),
 });
