@@ -10,16 +10,13 @@ import {
 } from '../services/user.js';
 
 export const registerController = async (req, res) => {
-  const { name, email, password, gender, currentDailyNorm } = req.body;
+  const { email, password } = req.body;
 
   const file = req.file;
 
   const registeredUser = await registerUser({
-    name,
     email,
     password,
-    gender,
-    currentDailyNorm,
     file,
   });
 
