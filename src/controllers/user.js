@@ -9,6 +9,18 @@ import {
   // resetPassword,
 } from '../services/user.js';
 
+const setupSession = (res, session) => {
+  const { _id: sessionId, refreshToken, refreshTokenValidUntil } = session;
+
+  const cookieOptions = {
+    httpOnly: true,
+    expires: refreshTokenValidUntil,
+  };
+
+  res.cookie('refreshToken', refreshToken, cookieOptions);
+  res.cookie('sessionId', sessionId, cookieOptions);
+};
+
 export const registerController = async (req, res) => {
   // const { email, password, language } = req.body;
   const payload = {
@@ -35,16 +47,7 @@ export const loginController = async (req, res) => {
 
   const session = await loginUser(email, password);
 
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    secure: true,
-    expires: session.refreshTokenValidUntil,
-  });
-  res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    secure: true,
-    expires: session.refreshTokenValidUntil,
-  });
+  setupSession(res, session);
 
   res.status(200).json({
     status: 200,
@@ -83,16 +86,7 @@ export const refreshTokenController = async (req, res) => {
 
   const session = await refreshSession(sessionId, refreshToken);
 
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    secure: true,
-    expires: session.refreshTokenValidUntil,
-  });
-  res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    secure: true,
-    expires: session.refreshTokenValidUntil,
-  });
+  setupSession(res, session);
 
   res.status(200).json({
     status: 200,
