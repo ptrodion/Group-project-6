@@ -13,6 +13,8 @@ tags:
     description: Operations about User.
   - name: Common
     description: Getting general information
+  - name: Water
+    description: Operations about Water.
 servers:
   - url: https://warettrack.onrender.com
 paths:
@@ -37,6 +39,12 @@ paths:
   /api/auth/users-count:
     get:
       $ref: ../swagger/paths/common/countUsersGet.yaml
+  /api/water:
+    post:
+      $ref: ../swagger/paths/water/{id}/createWaterPost.yaml
+  /api//water/{waterId}:
+    get:
+      $ref: ../swagger/paths/water/{id}/getWaterByiD.yaml
 components:
   securitySchemes:
     bearerAuth:

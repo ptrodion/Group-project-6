@@ -57,6 +57,9 @@ responses:
                   format: email
                   example: "john@example.com"
                   description: User's email address
+  '400':
+    description: 'Bad request - Invalid or missing parameters in the request body'
+    $ref: '../../components/responses/400.yaml'
   '409':
     description: 'Conflict - The email is already in use. Please provide a different email address.'
     $ref: '../../components/responses/409.yaml'

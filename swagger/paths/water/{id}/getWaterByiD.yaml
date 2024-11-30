@@ -1,0 +1,73 @@
+tags:
+  - Water
+summary: Retrieve a water intake record by ID
+operationId: getWaterById
+description: >
+  This endpoint allows you to retrieve a water intake record based on the provided water ID.
+  A valid water ID is required.
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: waterId
+    required: true
+    description: The unique identifier for the water intake record (must be a valid ObjectId).
+    schema:
+      type: string
+      example: "60c72b2f9b1d8e6b6d2e5f53"
+responses:
+  '200':
+    description: Successfully retrieved the water intake record
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+                - amount
+                - date
+                - currentDailyNorm
+                - userId
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Successfully retrieved the water record!"
+            data:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  example: 50
+                date:
+                  type: string
+                  example: "2024-11-29T11:00:00.000Z"
+                currentDailyNorm:
+                  type: number
+                  example: 2000
+                userId:
+                  type: string
+                  example: "60c72b2f9b1d8e6b6d2e5f53"
+                id:
+                  type: string
+                  example: "674b4aef2be12dbf558387aa"
+  '400':
+    description: 'Bad request - Invalid or missing parameters in the request body'
+    $ref: '../../../components/responses/400.yaml'
+  '404':
+    description: Not Found - Water record not found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: "Water record not found."
+  '500':
+    description: 'Internal Server Error - Something went wrong on the server side.'
+    $ref: '../../../components/responses/500.yaml'

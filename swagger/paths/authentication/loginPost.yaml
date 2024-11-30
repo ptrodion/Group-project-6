@@ -48,6 +48,9 @@ responses:
                     type: string
                     example: "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG"
                     description: JWT token for accessing protected resources
+  '400':
+    description: 'Bad request - Invalid or missing parameters in the request body'
+    $ref: '../../components/responses/400.yaml'
   '401':
     description: 'Unauthorized - Invalid credentials. This error can occur if the provided email or password is incorrect. Ensure that both the login credentials are accurate.'
     $ref: '../../components/responses/401_invalidDates.yaml'

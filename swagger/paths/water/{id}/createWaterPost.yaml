@@ -1,0 +1,72 @@
+tags:
+  - Water
+summary: Create a new water intake record
+operationId: createWater
+description: >
+  This endpoint allows a user to create a new water intake record, specifying the amount,
+  the date of intake, and the current daily water norm. A valid user ID is required.
+security:
+  - bearerAuth: []
+requestBody:
+  description: Water intake data to be created
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - amount
+          - date
+          - currentDailyNorm
+        properties:
+          amount:
+            type: number
+            example: 50
+            description: The amount of water consumed in milliliters.
+          date:
+            type: string
+            format: date-time
+            example: "2024-11-29T11:00:00.000Z"
+            description: The date and time when the water was consumed.
+          currentDailyNorm:
+            type: number
+            example: 2000
+            description: The current daily water intake norm.
+responses:
+  '201':
+    description: Successfully created a water record!
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: "Successfully created a water record!"
+            data:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  example: 50
+                date:
+                  type: string
+                  example: "2024-11-29T11:00:00.000Z"
+                currentDailyNorm:
+                  type: number
+                  example: 2000
+                userId:
+                  type: string
+                  example: "60c72b2f9b1d8e6b6d2e5f53"
+                id:
+                  type: string
+                  example: "674b4aef2be12dbf558387aa"
+  '400':
+    description: 'Bad request - Invalid or missing parameters in the request body'
+    $ref: '../../../components/responses/400.yaml'
+  '500':
+    description: 'Internal Server Error - Something went wrong on the server side.'
+    $ref: '../../../components/responses/500.yaml'
