@@ -51,7 +51,6 @@ export const loginController = async (req, res) => {
     message: 'Logged in successfully!',
     data: {
       accessToken: session.accessToken,
-      refreshToken: session.refreshToken
     },
   });
 };
