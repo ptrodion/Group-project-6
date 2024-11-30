@@ -21,6 +21,10 @@
     {
       "name": "Authentication",
       "description": "Operations about Authentication."
+    },
+    {
+      "name": "Common",
+      "description": "Getting general information"
     }
   ],
   "paths": {
@@ -495,6 +499,51 @@
           },
           "500": {
             "description": "Internal Server Error - Something went wrong on the server side.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/api/auth/users-count": {
+      "get": {
+        "tags": [
+          "Common"
+        ],
+        "summary": "Get the total number of users",
+        "operationId": "getStartUserCount",
+        "description": "Retrieve the total number of users from the database. **Important:** A valid access token is required to access this endpoint.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Total number of users successfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Number of users in the database 100'"
+                    },
+                    "totalUser": {
+                      "type": "integer",
+                      "example": 42
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - Unable to process the request.",
             "$ref": "#/components/responses/500"
           }
         }

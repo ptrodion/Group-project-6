@@ -9,6 +9,8 @@ info:
 tags:
   - name: Authentication
     description: Operations about Authentication.
+  - name: Common
+    description: Getting general information
 servers:
   - url: http://localhost:3002
   - url: https://warettrack.onrender.com
@@ -31,6 +33,9 @@ paths:
   /api/auth/refresh:
     post:
       $ref: ../swagger/paths/user/refreshPost.yaml
+  /api/auth/users-count:
+    get:
+      $ref: ../swagger/paths/common/countUsersGet.yaml
 components:
   securitySchemes:
     bearerAuth:
