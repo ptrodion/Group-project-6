@@ -51,10 +51,6 @@ requestBody:
                 - ua
               example: "en"
               description: "The user's preferred language for communication and system notifications(optional)"
-          displayName:
-            type: string
-            example: Hello, John
-            description: Optional user's name
           avatarUrlLocal:
             type: string
             format: binary
