@@ -7,32 +7,33 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   description: Application for monitoring water consumption
 tags:
+  - name: Authentication
+    description: Operations about Authentication.
   - name: User
-    description: All information about working with the user
+    description: Operations about User.
   - name: Common
     description: Getting general information
 servers:
-  - url: http://localhost:3002
   - url: https://warettrack.onrender.com
 paths:
   /api/auth/register:
     post:
-      $ref: ../swagger/paths/user/registerPost.yaml
+      $ref: ../swagger/paths/authentication/registerPost.yaml
   /api/auth/login:
     post:
-      $ref: ../swagger/paths/user/loginPost.yaml
+      $ref: ../swagger/paths/authentication/loginPost.yaml
+  /api/auth/logout:
+    post:
+      $ref: ../swagger/paths/authentication/logoutPost.yaml
+  /api/auth/refresh:
+    post:
+      $ref: ../swagger/paths/authentication/refreshPost.yaml
   /api/auth/current:
     get:
       $ref: ../swagger/paths/user/currentGet.yaml
   /api/auth/update-current-user:
     patch:
       $ref: ../swagger/paths/user/updateCurrentUserPatch.yaml
-  /api/auth/logout:
-    post:
-      $ref: ../swagger/paths/user/logoutPost.yaml
-  /api/auth/refresh:
-    post:
-      $ref: ../swagger/paths/user/refreshPost.yaml
   /api/auth/users-count:
     get:
       $ref: ../swagger/paths/common/countUsersGet.yaml

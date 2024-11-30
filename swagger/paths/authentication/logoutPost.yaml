@@ -1,5 +1,5 @@
 tags:
-  - User
+  - Authentication
 summary: Log out the current user
 operationId: logoutUser
 description: 'Logs out the currently authenticated user by invalidating their access token. **Important:** You must provide a valid access token to access this resource.'
