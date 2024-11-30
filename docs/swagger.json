@@ -82,11 +82,6 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
                   "properties": {
                     "status": {
                       "type": "integer",
@@ -116,9 +111,11 @@
             }
           },
           "409": {
+            "description": "Conflict - The email is already in use. Please provide a different email address.",
             "$ref": "#/components/responses/409"
           },
           "500": {
+            "description": "Internal Server Error - Something went wrong on the server side.",
             "$ref": "#/components/responses/500"
           }
         }
@@ -172,11 +169,6 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
                   "properties": {
                     "status": {
                       "type": "integer",
@@ -205,9 +197,197 @@
             }
           },
           "401": {
-            "$ref": "#/components/responses/401"
+            "description": "Unauthorized - Invalid credentials. This error can occur if the provided email or password is incorrect. Ensure that both the login credentials are accurate.",
+            "$ref": "#/components/responses/401_invalidDates"
           },
           "500": {
+            "description": "Internal Server Error - Something went wrong on the server side.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/api/auth/current": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get all information about the current user",
+        "operationId": "getInformationUser",
+        "description": "Get a user by his unique ID. **Important:** You must provide a valid access token to access this resource.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User successfully received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User information retrieved successfully!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Token is missing or invalid. Make sure to provide a valid bearer token in the Authorization header.",
+            "$ref": "#/components/responses/401_expiredToken"
+          },
+          "404": {
+            "description": "User not found - The user you are trying to update does not exist.",
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on the server side.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/api/auth/update-current-user": {
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update user information",
+        "operationId": "updateUserInformation",
+        "description": "Update information of the current user. **Important:** You must provide a valid access token to access this resource.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "example": "61e9f1f3e7b45c001ddc2e85",
+                    "description": "Unique identifier of the user"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "John Doe",
+                    "description": "The user's updated name (optional)"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "john.doe@example.com",
+                    "description": "The user's updated email (optional)"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "enum": [
+                      "woman",
+                      "man"
+                    ],
+                    "example": "man",
+                    "description": "The user's updated gender (optional)"
+                  },
+                  "weight": {
+                    "type": "integer",
+                    "example": 75,
+                    "description": "The user's updated weight in kilograms (optional)"
+                  },
+                  "activeTime": {
+                    "type": "integer",
+                    "example": 1,
+                    "description": "User's active time in minutes"
+                  },
+                  "currentDailyNorm": {
+                    "type": "integer",
+                    "example": 2000,
+                    "description": "The user's updated daily water intake norm in milliliters (optional)"
+                  },
+                  "language": {
+                    "type": "string",
+                    "enum": [
+                      "en",
+                      "de",
+                      "ua"
+                    ],
+                    "example": "en",
+                    "description": "User's preferred language"
+                  },
+                  "displayName": {
+                    "type": "string",
+                    "example": "Hello, John",
+                    "description": "Optional user's name"
+                  },
+                  "avatarUrlLocal": {
+                    "type": "string",
+                    "format": "binary",
+                    "example": "https://example.com/avatar.jpg",
+                    "description": "The URL for the user's new avatar image (optional)"
+                  },
+                  "avatarUrlCloudinary": {
+                    "type": "string",
+                    "format": "binary",
+                    "example": "https://example.com/avatar.jpg",
+                    "description": "The URL for the user's new avatar image (optional)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User information successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User information updated successfully!"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid or missing parameters in the request body",
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Unauthorized - Token is missing or invalid. Make sure to provide a valid bearer token in the Authorization header.",
+            "$ref": "#/components/responses/401_expiredToken"
+          },
+          "404": {
+            "description": "User not found - The user you are trying to update does not exist.",
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on the server side.",
             "$ref": "#/components/responses/500"
           }
         }
@@ -222,37 +402,48 @@
       }
     },
     "responses": {
-      "401": {
-        "description": "Invalid credentials",
+      "400": {
+        "description": "Bad Request - Invalid or missing parameters",
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
               "required": [
                 "status",
-                "message",
-                "data"
+                "message"
               ],
               "properties": {
                 "status": {
                   "type": "integer",
-                  "example": 401
+                  "example": 400
                 },
                 "message": {
                   "type": "string",
-                  "example": "Invalid credentials"
+                  "example": "Bad request, invalid or missing parameters"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "User not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 404
                 },
-                "data": {
-                  "type": "object",
-                  "required": [
-                    "message"
-                  ],
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Access token not provided"
-                    }
-                  }
+                "message": {
+                  "type": "string",
+                  "example": "User not found"
                 }
               }
             }
@@ -306,6 +497,173 @@
             }
           }
         }
+      },
+      "401_invalidDates": {
+        "description": "Invalid credentials",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Invalid credentials"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid credentials"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401_expiredToken": {
+        "description": "Invalid or expired access token",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Invalid or expired access token"
+                },
+                "data": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired access token"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "user": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "61e9f1f3e7b45c001ddc2e85",
+            "description": "Unique identifier of the user"
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe",
+            "description": "Name of the user"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com",
+            "description": "User's email address"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "woman",
+              "man"
+            ],
+            "example": "woman",
+            "description": "Gender of the user"
+          },
+          "weight": {
+            "type": "number",
+            "minimum": 0,
+            "example": 70,
+            "description": "User's weight in kilograms"
+          },
+          "activeTime": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 120,
+            "description": "User's active time in minutes"
+          },
+          "currentDailyNorm": {
+            "type": "integer",
+            "minimum": 50,
+            "maximum": 5000,
+            "example": 1500,
+            "description": "Daily water intake norm in milliliters"
+          },
+          "avatarUrlLocal": {
+            "type": "string",
+            "format": "binari",
+            "example": "https://example.com/avatar.jpg",
+            "description": "URL of the user's avatar"
+          },
+          "avatarUrlCloudinary": {
+            "type": "string",
+            "format": "binari",
+            "example": "https://example.com/avatar.jpg",
+            "description": "URL of the user's avatar"
+          },
+          "languages": {
+            "type": "string",
+            "enum": [
+              "en",
+              "de",
+              "ua"
+            ],
+            "example": "en",
+            "description": "Preferred language of the user"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-11-28T12:34:56Z",
+            "description": "Timestamp of user creation"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-11-28T15:45:23Z",
+            "description": "Timestamp of last update to the user"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "gender",
+          "currentDailyNorm",
+          "createdAt",
+          "updatedAt"
+        ]
       }
     }
   }
