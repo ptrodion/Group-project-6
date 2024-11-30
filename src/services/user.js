@@ -131,13 +131,8 @@ export const refreshSession = async (sessionId, refreshToken) => {
 
   const newSession = await createAndSaveSession(session.userId);
 
-  // Удаляем старую сессию только после успешного создания новой
   await SessionCollection.deleteOne({ _id: session._id });
-
-  return newSession;
-
-  // await SessionCollection.deleteOne({ _id: session._id });
-  // return await createAndSaveSession(session.userId);
+  return await createAndSaveSession(session.userId);
 };
 
 export const logoutUser = async (sessionId) => {
