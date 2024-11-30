@@ -6,7 +6,7 @@ description: 'Logs out the currently authenticated user by invalidating their ac
 security:
   - bearerAuth: []
 responses:
-  '200':
+  '204':
     description: 'User successfully logged out'
     content:
       application/json:
