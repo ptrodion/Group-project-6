@@ -4,6 +4,6 @@ import { getStartUserCountController } from "../controllers/common.js";
 
 const commonRouter = Router();
 
-commonRouter.get('/user-count', ctrlWrapper(getStartUserCountController));
+commonRouter.get('/users-count', ctrlWrapper(getStartUserCountController));
 
 export default commonRouter;
