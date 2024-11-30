@@ -25,4 +25,11 @@ const waterSchema = new Schema(
   },
 );
 
+waterSchema.methods.toJSON = function (doc, ret) {
+  const obj = this.toObject();
+  obj.id = obj._id.toString();
+  delete obj._id;
+  return obj;
+};
+
 export const WaterCollection = model('Water', waterSchema);
