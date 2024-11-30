@@ -5,6 +5,7 @@ import { WaterCollection } from '../db/models/water.js';
 
 export const createWater = async (payload) => {
   let { amount, date, currentDailyNorm, userId } = payload;
+
   const water =  await WaterCollection.create({
     amount,
     date: date,
@@ -89,7 +90,7 @@ export const getWaterPerDay = async (userId, date) => {
   // get the end of the day (23:59:59.999)
   const endOfDay = new Date(dateObj);
   endOfDay.setUTCHours(23, 59, 59, 999);
- 
+
   // convert to ISO strings for filtering in  MongoDB
   const startOfDayISO = startOfDay.toISOString();
   const endOfDayISO = endOfDay.toISOString();

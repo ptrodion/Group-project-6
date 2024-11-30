@@ -11,6 +11,7 @@ import {
 export const createWaterController = async (req, res) => {
   const userId = req.user; //id from authMiddleware
   const { amount, date, currentDailyNorm } = req.body;
+
   //data to be transfered to the service
   const data = {
     amount,
