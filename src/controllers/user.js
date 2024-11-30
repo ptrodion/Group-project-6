@@ -10,21 +10,21 @@ import {
 } from '../services/user.js';
 
 export const registerController = async (req, res) => {
-  const { email, password, language } = req.body;
+  // const { email, password, language } = req.body;
+  const payload = {
+    language: req.body.language,
+    email: req.body.email,
+    password: req.body.password,
+  };
 
   const file = req.file;
 
-  const registeredUser = await registerUser({
-    email,
-    password,
-    file,
-    language,
-  });
+  const email = await registerUser(payload, file);
 
   res.status(201).json({
     status: 201,
     message: 'User registered successfully!',
-    data: registeredUser,
+    data: email,
   });
 };
 

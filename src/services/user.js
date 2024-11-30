@@ -79,7 +79,6 @@ const capitalizeName = (name) => {
 };
 
 export const registerUser = async (payload, file, language) => {
-  console.log('Payload before validation:', payload);
   payload.email = payload.email.toLowerCase();
 
   const userExists = await UsersCollection.findOne({
@@ -103,7 +102,9 @@ export const registerUser = async (payload, file, language) => {
     payload.avatarUrlLocal = localUrl;
   }
 
-  return UsersCollection.create(payload);
+  const newUser = await UsersCollection.create(payload);
+
+  return newUser.email;
 };
 
 export const loginUser = async (email, password) => {
