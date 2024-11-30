@@ -41,24 +41,10 @@ const userSchema = new Schema(
   },
 );
 
-userSchema.virtual('displayName').get(function () {
-  if (!this.name || this.name.trim() === '') {
-    const emailPrefix = this.email.split('@')[0];
-    return `Hello, ${
-      emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1).toLowerCase()
-    }`;
-  }
-
-  return `Hello, ${
-    this.name.charAt(0).toUpperCase() + this.name.slice(1).toLowerCase()
-  }`;
-}); // для того щоб, якщо не ввели імя, було написано початок електронної пошти
-
-userSchema.set('toObject', { virtuals: true }); // для того щоб, якщо не ввели імя, було написано початок електронної пошти
-
 userSchema.methods.toJSON = function (doc, ret) {
   const obj = this.toObject();
   delete obj.password;
+  obj.id = obj._id.toString();
   delete obj._id;
   return obj;
 };

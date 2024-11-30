@@ -73,14 +73,7 @@ const createAndSaveSession = async (userId) => {
   return await SessionCollection.create({ userId, ...newSession });
 };
 
-const capitalizeName = (name) => {
-  if (!name) return '';
-  return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-};
-
 export const registerUser = async (payload, file, language) => {
-  payload.email = payload.email.toLowerCase();
-
   const userExists = await UsersCollection.findOne({
     email: payload.email,
   });
@@ -90,10 +83,6 @@ export const registerUser = async (payload, file, language) => {
   }
 
   payload.password = await bcrypt.hash(payload.password, 10);
-
-  if (payload.name) {
-    payload.name = capitalizeName(payload.name); // ім'я з великої літери
-  }
 
   if (file) {
     const { cloudinaryUrl, localUrl } = await saveAvatar(file);
@@ -166,9 +155,7 @@ export const updateUser = async (userId, updateData, file) => {
   if (!user) {
     throw createHttpError(404, 'User not found');
   }
-  if (updateData.name) {
-    updateData.name = capitalizeName(updateData.name);
-  }
+
   if (file) {
     if (user.avatarUrlCloudinary) {
       await deleteAvatar(user.avatarUrlCloudinary, 'cloudinary');
