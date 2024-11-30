@@ -1,0 +1,40 @@
+tags:
+  - User
+summary: Refresh the access token
+operationId: refreshToken
+description: 'Refresh the access token using a valid refresh token. **Important:** You must provide a valid refresh token to access this resource.'
+security:
+  - bearerAuth: []
+responses:
+  '200':
+    description: 'Access token successfully refreshed'
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Access token refreshed successfully!'
+            data:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  example: 'newlyGeneratedAccessToken12345'
+                expiresIn:
+                  type: integer
+                  example: 3600
+  '400':
+    description: 'Bad Request - The refresh token is missing or invalid.'
+    $ref: '../../components/responses/400.yaml'
+  '401':
+    description: 'Unauthorized - The refresh token is expired or invalid.'
+    $ref: '../../components/responses/401_expiredToken.yaml'
+  '500':
+    description: 'Internal Server Error - Something went wrong on the server side.'
+    $ref: '../../components/responses/500.yaml'
+
