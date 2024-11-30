@@ -19,6 +19,12 @@ paths:
   /api/auth/login:
     post:
       $ref: ../swagger/paths/user/loginPost.yaml
+  /api/auth/current:
+    get:
+      $ref: ../swagger/paths/user/getCurrent.yaml
+  /api/auth/update-current-user:
+    patch:
+      $ref: ../swagger/paths/user/updateCurrentUser.yaml
 components:
   securitySchemes:
     bearerAuth:

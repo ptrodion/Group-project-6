@@ -29,98 +29,120 @@ responses:
   '200':
     description: Logged in successfully!
     content:
-      multipart/form-data:
+      application/json:
         schema:
           type: object
-          required:
-            - status
-            - message
-            - data
           properties:
-            status:
-              type: integer
-              example: 200
-            message:
-              type: string
-              example: 'Logged in successfully!'
-            data:
-              type: object
-              required:
-                - name
-                - email
-                - avatarUrl
-                - gender
-                - weight
-                - activeTime
-                - currentDailyNorm
-                - languages
-                - createdAt
-                - updatedAt
-                - displayName
-                - id
-              properties:
-                name:
-                  type: string
-                  example: ""
-                  description: User's name (optional, can be empty)
-                email:
-                  type: string
-                  format: email
-                  example: "john@example.com"
-                  description: User's email address
-                avatarUrl:
-                  type: string
-                  format: binary
-                  example: null
-                  description: URL for the user's avatar or `null` if not set
-                gender:
-                  type: string
-                  enum:
-                    - woman
-                    - man
-                  example: "man"
-                  description: User's gender
-                weight:
-                  type: integer
-                  example: 50
-                  description: User's weight in kilograms
-                activeTime:
-                  type: integer
-                  example: 1
-                  description: User's active time in minutes
-                currentDailyNorm:
-                  type: integer
-                  minimum: 50
-                  maximum: 5000
-                  example: 1500
-                  description: Daily water intake norm in milliliters
-                languages:
-                  type: string
-                  enum:
-                    - en
-                    - de
-                    - ua
-                  example: "en"
-                  description: User's preferred language
-                createdAt:
-                  type: string
-                  format: date-time
-                  example: "2024-11-28T21:41:06.133Z"
-                  description: Timestamp of when the user was created
-                updatedAt:
-                  type: string
-                  format: date-time
-                  example: "2024-11-28T21:41:06.133Z"
-                  description: Timestamp of when the user was last updated
-                displayName:
-                  type: string
-                  example: "Hello, John"
-                  description: Display name generated based on user's email or name
-                id:
-                  type: string
-                  example: "6748e37270203f0d34a819b1"
-                  description: User's unique identifier
+              status:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: 'Logged in successfully!'
+              data:
+                type: object
+                required:
+                  - accessToken
+                properties:
+                  accessToken:
+                    type: string
+                    example: "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG"
+                    description: JWT token for accessing protected resources
+          # properties:
+          #   status:
+          #     type: integer
+          #     example: 200
+          #   message:
+          #     type: string
+          #     example: 'Logged in successfully!'
+          #   data:
+          #     type: object
+          #     required:
+          #       type: object
+          #     required:
+          #       - accessToken
+          #     properties:
+          #       accessToken:
+          #         type: string
+          #         example: "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG"
+          #         description: JWT token for accessing protected resources
+                # - name
+                # - email
+                # - avatarUrl
+                # - gender
+                # - weight
+                # - activeTime
+                # - currentDailyNorm
+                # - languages
+                # - createdAt
+                # - updatedAt
+                # - displayName
+                # - id
+              # properties:
+              #   name:
+              #     type: string
+              #     example: ""
+              #     description: User's name (optional, can be empty)
+              #   email:
+              #     type: string
+              #     format: email
+              #     example: "john@example.com"
+              #     description: User's email address
+              #   avatarUrl:
+              #     type: string
+              #     format: binary
+              #     example: null
+              #     description: URL for the user's avatar or `null` if not set
+              #   gender:
+              #     type: string
+              #     enum:
+              #       - woman
+              #       - man
+              #     example: "man"
+              #     description: User's gender
+              #   weight:
+              #     type: integer
+              #     example: 50
+              #     description: User's weight in kilograms
+              #   activeTime:
+              #     type: integer
+              #     example: 1
+              #     description: User's active time in minutes
+              #   currentDailyNorm:
+              #     type: integer
+              #     minimum: 50
+              #     maximum: 5000
+              #     example: 1500
+              #     description: Daily water intake norm in milliliters
+              #   languages:
+              #     type: string
+              #     enum:
+              #       - en
+              #       - de
+              #       - ua
+              #     example: "en"
+              #     description: User's preferred language
+              #   createdAt:
+              #     type: string
+              #     format: date-time
+              #     example: "2024-11-28T21:41:06.133Z"
+              #     description: Timestamp of when the user was created
+              #   updatedAt:
+              #     type: string
+              #     format: date-time
+              #     example: "2024-11-28T21:41:06.133Z"
+              #     description: Timestamp of when the user was last updated
+              #   displayName:
+              #     type: string
+              #     example: "Hello, John"
+              #     description: Display name generated based on user's email or name
+              #   id:
+              #     type: string
+              #     example: "6748e37270203f0d34a819b1"
+              #     description: User's unique identifier
   '401':
-    $ref: '../../components/responses/401.yaml'
+    description: 'Unauthorized - Invalid credentials. This error can occur if the provided email or password is incorrect. Ensure that both the login credentials are accurate.'
+    $ref: '../../components/responses/401_invalidDates.yaml'
   '500':
+    description: 'Internal Server Error - Something went wrong on the server side.'
     $ref: '../../components/responses/500.yaml'

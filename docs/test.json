@@ -1,0 +1,17 @@
+[
+  {
+    data: 01.01.2000
+    totalDay: 1000
+    currentDaileNorma 1000
+  }
+  {
+    data: 02.01.2000
+    totalDay: 2000
+    currentDaileNorma 1000
+  }
+  {
+    data: 03.01.2000
+    totalDay: 2000
+    currentDaileNorma 1750
+  }
+]

@@ -2,7 +2,6 @@
   properties:
     id:
       type: string
-      format: uuid
       example: "61e9f1f3e7b45c001ddc2e85"
       description: Unique identifier of the user
     name:
@@ -37,18 +36,23 @@
       maximum: 5000
       example: 1500
       description: Daily water intake norm in milliliters
-    avatarUrl:
+    avatarUrlLocal:
       type: string
-      format: uri
+      format: binari
+      example: "https://example.com/avatar.jpg"
+      description: URL of the user's avatar
+    avatarUrlCloudinary:
+      type: string
+      format: binari
       example: "https://example.com/avatar.jpg"
       description: URL of the user's avatar
     languages:
       type: string
       enum:
-        - En
-        - Ge
-        - Uk
-      example: En
+        - en
+        - de
+        - ua
+      example: en
       description: Preferred language of the user
     createdAt:
       type: string
