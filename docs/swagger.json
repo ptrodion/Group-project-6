@@ -311,7 +311,7 @@
                   "activeTime": {
                     "type": "integer",
                     "example": 1,
-                    "description": "User's active time in minutes"
+                    "description": "The user's daily active time in minutes (optional)."
                   },
                   "currentDailyNorm": {
                     "type": "integer",
@@ -326,7 +326,7 @@
                       "ua"
                     ],
                     "example": "en",
-                    "description": "User's preferred language"
+                    "description": "The user's preferred language for communication and system notifications(optional)"
                   },
                   "displayName": {
                     "type": "string",
@@ -385,6 +385,113 @@
           "404": {
             "description": "User not found - The user you are trying to update does not exist.",
             "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on the server side.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Log out the current user",
+        "operationId": "logoutUser",
+        "description": "Logs out the currently authenticated user by invalidating their access token. **Important:** You must provide a valid access token to access this resource.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User successfully logged out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User logged out successfully!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Token is missing or invalid. Make sure to provide a valid bearer token in the Authorization header.",
+            "$ref": "#/components/responses/401_expiredToken"
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on the server side.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Refresh the access token",
+        "operationId": "refreshToken",
+        "description": "Refresh the access token using a valid refresh token. **Important:** You must provide a valid refresh token to access this resource.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Access token successfully refreshed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Access token refreshed successfully!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string",
+                          "example": "newlyGeneratedAccessToken12345"
+                        },
+                        "expiresIn": {
+                          "type": "integer",
+                          "example": 3600
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - The refresh token is missing or invalid.",
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Unauthorized - The refresh token is expired or invalid.",
+            "$ref": "#/components/responses/401_expiredToken"
           },
           "500": {
             "description": "Internal Server Error - Something went wrong on the server side.",
