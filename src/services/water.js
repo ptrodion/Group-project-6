@@ -1,3 +1,4 @@
+import createHttpError from 'http-errors';
 import { WaterCollection } from '../db/models/water.js';
 
 //creating a new record(volume,date and userId)
@@ -80,16 +81,15 @@ export const deleteWaterById = async (waterId, userId) => {
 export const getWaterPerDay = async (userId, date) => {
   // convert the date string to Date object
   const dateObj = new Date(date);
-console.log("dateObj", dateObj);
+
   // get the start of the day (00:00:00)
   const startOfDay = new Date(dateObj);
   startOfDay.setUTCHours(0, 0, 0, 0);
-  console.log("startDay",  startOfDay);
 
   // get the end of the day (23:59:59.999)
   const endOfDay = new Date(dateObj);
   endOfDay.setUTCHours(23, 59, 59, 999);
-  console.log("entDay", endOfDay);
+ 
   // convert to ISO strings for filtering in  MongoDB
   const startOfDayISO = startOfDay.toISOString();
   const endOfDayISO = endOfDay.toISOString();
@@ -100,8 +100,8 @@ console.log("dateObj", dateObj);
     date: { $gte: startOfDayISO, $lte: endOfDayISO },
   }).lean();
 
-  if (!waterRecords || waterRecords.length === 0) {
-    return {
+  if (!waterRecords) {
+     return {
       value: [],
       totalAmount: 0,
     };
@@ -123,24 +123,48 @@ console.log("dateObj", dateObj);
 };
 
 //get water consumption per month
-
 export const getWaterPerMonth = async (userId, date) => {
-  // start of the month
-  const startOfMonth = new Date(`${date}-01T00:00:00.000Z`).toISOString();
 
-  // end of the month
-  const endOfMonth = new Date(`${date}-01T00:00:00.000Z`);
-  endOfMonth.setUTCMonth(endOfMonth.getUTCMonth() + 1); // move to next month
-  endOfMonth.setUTCDate(0); // last day of a previous month
-  endOfMonth.setUTCHours(23, 59, 59, 999); // end of the day
-  const endOfMonthISO = endOfMonth.toISOString();
+  const startOfMonth = new Date(date);
+  startOfMonth.setUTCDate(1);
+  startOfMonth.setUTCHours(0, 0, 0, 0);
 
+  const endOfMonth = new Date(startOfMonth);
+  endOfMonth.setUTCMonth(endOfMonth.getUTCMonth() + 1);
+  endOfMonth.setUTCHours(23, 59, 59, 999);
+
+  // get all the records for the month
   const waterRecords = await WaterCollection.find({
     userId,
-    date: { $gte: startOfMonth, $lte: endOfMonthISO },
+    date: { $gte: startOfMonth.toISOString(), $lte: endOfMonth.toISOString() },
+  }).lean();
+
+  if (!waterRecords || waterRecords.length === 0) {
+    //return { totalWater: 0, dailyRecords: [] };
+    throw createHttpError(400, 'No records found');
+  }
+
+  // group records by days
+  const groupedByDay = {};
+  waterRecords.forEach((record) => {
+    const day = record.date.split("T")[0]; // extract date without time
+    if (!groupedByDay[day]) {
+      groupedByDay[day] = 0;
+    }
+    groupedByDay[day] += record.amount;
   });
 
-  const totalWater = waterRecords.reduce((sum, record) => sum + record.amount, 0);
+  // convert object to array
+  const dailyRecords = Object.keys(groupedByDay).map((date) => ({
+    date,
+    totalAmount: groupedByDay[date],
+  }));
 
-  return totalWater;
+  // total volume of water
+  const totalWater = dailyRecords.reduce((sum, record) => sum + record.totalAmount, 0);
+
+  return {
+    totalWater,
+    dailyRecords,
+  };
 };
