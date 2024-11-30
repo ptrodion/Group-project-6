@@ -1,0 +1,29 @@
+tags:
+  - Water
+summary: Delete a water intake record by ID
+operationId: deleteWaterById
+description: >
+  This endpoint allows you to delete a water intake record based on the provided water ID.
+  A valid water ID is required.
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: waterId
+    required: true
+    description: The unique identifier of the water intake record (ObjectId).
+    schema:
+      type: string
+      example: "60c72b2f9b1d8e6b6d2e5f53"
+responses:
+  '204':
+    description: Successfully deleted the water intake record
+  '400':
+    description: Bad Request - Invalid water ID format
+    $ref: '../../../components/responses/400.yaml'
+  '404':
+    description: Water record not found
+    $ref: '../../../components/responses/404.yaml'
+  '500':
+    description: Internal Server Error
+    $ref: '../../../components/responses/500.yaml'

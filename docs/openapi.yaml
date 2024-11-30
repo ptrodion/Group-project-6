@@ -42,9 +42,13 @@ paths:
   /api/water:
     post:
       $ref: ../swagger/paths/water/{id}/createWaterPost.yaml
-  /api//water/{waterId}:
+  /api/water/{waterId}:
     get:
-      $ref: ../swagger/paths/water/{id}/getWaterByiD.yaml
+      $ref: ../swagger/paths/water/{id}/getWaterById.yaml
+    patch:
+      $ref: ../swagger/paths/water/{id}/updateWaterByIdPatch.yaml
+    delete:
+      $ref: ../swagger/paths/water/{id}/deleteRecordById.yaml
 components:
   securitySchemes:
     bearerAuth:

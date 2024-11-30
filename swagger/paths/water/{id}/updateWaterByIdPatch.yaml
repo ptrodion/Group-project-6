@@ -1,0 +1,85 @@
+tags:
+  - Water
+summary: Update a water intake record by ID
+operationId: updateWaterById
+description: >
+  This endpoint allows you to update an existing water intake record based on the provided water ID.
+  A valid water ID is required, and you must provide the data to update.
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: waterId
+    required: true
+    description: The unique identifier of the water intake record (ObjectId).
+    schema:
+      type: string
+      pattern: "^[0-9a-fA-F]{24}$"
+      example: "60c72b2f9b1d8e6b6d2e5f53"
+requestBody:
+  description: Water intake data to update
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          amount:
+            type: number
+            example: 50
+            description: The amount of water consumed in milliliters.
+          date:
+            type: string
+            format: date-time
+            example: "2024-11-29T11:00:00.000Z"
+            description: The date and time when the water was consumed.
+          currentDailyNorm:
+            type: number
+            example: 2000
+            description: The current daily water intake norm.
+          userId:
+            type: string
+            example: "60c72b2f9b1d8e6b6d2e5f53"
+            description: The unique identifier for the user (must be a valid ObjectId).
+responses:
+  '200':
+    description: Successfully updated the water intake record
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Successfully updated the water record!"
+            data:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  example: 50
+                date:
+                  type: string
+                  format: date-time
+                  example: "2024-11-29T11:00:00.000Z"
+                currentDailyNorm:
+                  type: number
+                  example: 2000
+                userId:
+                  type: string
+                  example: "60c72b2f9b1d8e6b6d2e5f53"
+  '400':
+    description: 'Bad request - Invalid or missing parameters in the request body'
+    $ref: '../../../components/responses/400.yaml'
+  '404':
+    description: Water record not found
+    $ref: '../../../components/responses/404.yaml'
+  '500':
+    description: 'Internal Server Error - Something went wrong on the server side.'
+    $ref: '../../../components/responses/500.yaml'
+
+
+
