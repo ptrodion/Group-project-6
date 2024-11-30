@@ -19,7 +19,7 @@
   ],
   "tags": [
     {
-      "name": "Authentication",
+      "name": "User",
       "description": "Operations about Authentication."
     },
     {
