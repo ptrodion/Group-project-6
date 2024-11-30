@@ -7,8 +7,8 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   description: Application for monitoring water consumption
 tags:
-  - name: Authentication
-    description: Operations about Authentication.
+  - name: User
+    description: All information about working with the user
   - name: Common
     description: Getting general information
 servers:
