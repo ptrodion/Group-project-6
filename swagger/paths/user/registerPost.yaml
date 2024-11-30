@@ -40,10 +40,6 @@ responses:
       application/json:
         schema:
           type: object
-          required:
-            - status
-            - message
-            - data
           properties:
             status:
               type: integer
@@ -61,33 +57,9 @@ responses:
                   format: email
                   example: "john@example.com"
                   description: User's email address
-                # displayName:
-                #   type: string
-                #   example: Hello, John
-                #   description: Optional user's name
-                # gender:
-                #   type: string
-                #   enum:
-                #     - woman
-                #     - man
-                #   default: woman
-                #   example: woman
-                #   description: User's gender
-                # currentDailyNorm:
-                #   type: integer
-                #   minimum: 50
-                #   maximum: 5000
-                #   example: 1500
-                #   description: Daily water intake norm in milliliters
-                # language:
-                #   type: string
-                #   enum:
-                #     - en
-                #     - de
-                #     - ua
-                #   example: "en"
-                #   description: User's preferred language
   '409':
+    description: 'Conflict - The email is already in use. Please provide a different email address.'
     $ref: '../../components/responses/409.yaml'
   '500':
+    description: 'Internal Server Error - Something went wrong on the server side.'
     $ref: '../../components/responses/500.yaml'

@@ -32,10 +32,6 @@ responses:
       application/json:
         schema:
           type: object
-          required:
-            - status
-            - message
-            - data
           properties:
               status:
                 type: integer
@@ -145,6 +141,8 @@ responses:
               #     example: "6748e37270203f0d34a819b1"
               #     description: User's unique identifier
   '401':
-    $ref: '../../components/responses/401.yaml'
+    description: 'Unauthorized - Invalid credentials. This error can occur if the provided email or password is incorrect. Ensure that both the login credentials are accurate.'
+    $ref: '../../components/responses/401_invalidDates.yaml'
   '500':
+    description: 'Internal Server Error - Something went wrong on the server side.'
     $ref: '../../components/responses/500.yaml'
