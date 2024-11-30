@@ -757,8 +757,6 @@
           }
         ],
         "requestBody": {
-          "description": "Water intake data to update",
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -767,18 +765,18 @@
                   "amount": {
                     "type": "number",
                     "example": 50,
-                    "description": "The amount of water consumed in milliliters."
+                    "description": "The amount of water consumed in milliliters(optional)."
                   },
                   "date": {
                     "type": "string",
                     "format": "date-time",
                     "example": "2024-11-29T11:00:00.000Z",
-                    "description": "The date and time when the water was consumed."
+                    "description": "The date and time when the water was consumed(optional)."
                   },
                   "currentDailyNorm": {
                     "type": "number",
                     "example": 2000,
-                    "description": "The current daily water intake norm."
+                    "description": "The current daily water intake norm(optional)."
                   },
                   "userId": {
                     "type": "string",
