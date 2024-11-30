@@ -61,7 +61,6 @@ requestBody:
             format: binary
             example: "https://example.com/avatar.jpg"
             description: "The URL for the user's new avatar image (optional)"
-
 responses:
   '200':
     description: 'User information successfully updated'

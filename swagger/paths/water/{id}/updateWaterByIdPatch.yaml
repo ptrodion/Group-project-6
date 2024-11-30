@@ -17,8 +17,6 @@ parameters:
       pattern: "^[0-9a-fA-F]{24}$"
       example: "60c72b2f9b1d8e6b6d2e5f53"
 requestBody:
-  description: Water intake data to update
-  required: true
   content:
     application/json:
       schema:
@@ -27,16 +25,16 @@ requestBody:
           amount:
             type: number
             example: 50
-            description: The amount of water consumed in milliliters.
+            description: The amount of water consumed in milliliters(optional).
           date:
             type: string
             format: date-time
             example: "2024-11-29T11:00:00.000Z"
-            description: The date and time when the water was consumed.
+            description: The date and time when the water was consumed(optional).
           currentDailyNorm:
             type: number
             example: 2000
-            description: The current daily water intake norm.
+            description: The current daily water intake norm(optional).
           userId:
             type: string
             example: "60c72b2f9b1d8e6b6d2e5f53"
