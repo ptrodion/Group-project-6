@@ -8,7 +8,7 @@ info:
   description: Application for monitoring water consumption
 tags:
   - name: User
-    description: Operations about Authentication.
+    description: All information about working with the user
   - name: Common
     description: Getting general information
 servers:
