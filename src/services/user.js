@@ -116,6 +116,7 @@ export const loginUser = async (email, password) => {
 export const refreshSession = async (sessionId, refreshToken) => {
   const session = await SessionCollection.findById(sessionId);
 
+
   if (!session) {
     throw createHttpError(401, 'Session not found');
   }
@@ -128,8 +129,15 @@ export const refreshSession = async (sessionId, refreshToken) => {
     throw createHttpError(401, 'Refresh token expired');
   }
 
+  const newSession = await createAndSaveSession(session.userId);
+
+  // Удаляем старую сессию только после успешного создания новой
   await SessionCollection.deleteOne({ _id: session._id });
-  return await createAndSaveSession(session.userId);
+
+  return newSession;
+
+  // await SessionCollection.deleteOne({ _id: session._id });
+  // return await createAndSaveSession(session.userId);
 };
 
 export const logoutUser = async (sessionId) => {
