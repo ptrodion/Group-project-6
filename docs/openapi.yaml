@@ -49,6 +49,12 @@ paths:
       $ref: ../swagger/paths/water/{id}/updateWaterByIdPatch.yaml
     delete:
       $ref: ../swagger/paths/water/{id}/deleteRecordById.yaml
+  /api/water/day/{date}:
+    get:
+      $ref: ../swagger/paths/water/{id}/getWaterPerDay.yaml
+  /api/water/month/{date}:
+    get:
+      $ref: ../swagger/paths/water/{id}/getWaterPerMonth.yaml
 components:
   securitySchemes:
     bearerAuth:

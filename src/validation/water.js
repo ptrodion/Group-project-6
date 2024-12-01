@@ -11,10 +11,6 @@ export const createWaterSchema = Joi.object({
     'date.base': 'The date must be a string.',
      'any.required': 'The date is required.',
    }),
-  currentDailyNorm: Joi.number().required().messages({
-    'number.base': 'The currentDailyNorm must be a number.',
-    'any.required': 'The currentDailyNorm is required.',
-  }),
   userId: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/)
     .messages({
@@ -29,10 +25,10 @@ export const updateWaterSchema = Joi.object({
     'number.integer': 'The amount of water should be a whole number.',
 
   }),
-  date: Joi.string().required().example("2024-11-29T11:00:00.000Z").messages({
+  date: Joi.string().example("2024-11-29T11:00:00.000Z").messages({
     'string.base': 'The date must be a string.',
   }),
-   currentDailyNorm: Joi.number().required().messages({
+  currentDailyNorm: Joi.number().messages({
     'number.base': 'The currentDailyNorm must be a number.',
   }),
 })

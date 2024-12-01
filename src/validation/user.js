@@ -69,18 +69,19 @@ export const updateCurrentUserSchema = Joi.object({
   email: Joi.string()
     .email()
     .pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
-    .required()
     .messages({
       'string.pattern.base': 'Please enter a valid email address',
       'any.required': 'email is required',
     }),
+
   password: Joi.string().min(6),
   gender: Joi.string().valid('woman', 'man').required(),
+
+
   currentDailyNorm: Joi.number()
     .integer()
     .min(50)
     .max(5000)
-    .required()
     .messages({
       'any.required': 'CurrentDailyNorm is required',
       'number.integer': 'CurrentDailyNorm must be an integer',

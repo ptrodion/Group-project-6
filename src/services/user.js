@@ -62,7 +62,8 @@ const createSession = () => {
   return {
     accessToken,
     refreshToken,
-    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
+    // accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
+    accessTokenValidUntil: new Date(Date.now() + 1500 * 60 * 1000),
     refreshTokenValidUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   };
 };
@@ -116,6 +117,7 @@ export const loginUser = async (email, password) => {
 export const refreshSession = async (sessionId, refreshToken) => {
   const session = await SessionCollection.findById(sessionId);
 
+
   if (!session) {
     throw createHttpError(401, 'Session not found');
   }
@@ -127,6 +129,8 @@ export const refreshSession = async (sessionId, refreshToken) => {
   if (new Date() > session.refreshTokenValidUntil) {
     throw createHttpError(401, 'Refresh token expired');
   }
+
+  const newSession = await createAndSaveSession(session.userId);
 
   await SessionCollection.deleteOne({ _id: session._id });
   return await createAndSaveSession(session.userId);

@@ -887,6 +887,199 @@
           }
         }
       }
+    },
+    "/api/water/day/{date}": {
+      "get": {
+        "tags": [
+          "Water"
+        ],
+        "summary": "Retrieve daily water intake records",
+        "operationId": "getWaterPerDay",
+        "description": "This endpoint allows you to retrieve all water intake records for a specific day. A valid date and authentication token are required.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "date",
+            "required": true,
+            "description": "The date for which to retrieve water intake records (ISO format, e.g., 2024-11-29).",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2024-11-29"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved daily water records!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully retrieved daily water records!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "totalAmount": {
+                          "type": "number",
+                          "example": 2500,
+                          "description": "The total amount of water consumed during the day in milliliters."
+                        },
+                        "records": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "Unique identifier of the water record.",
+                                "example": "60c72b2f9b1d8e6b6d2e5f53"
+                              },
+                              "amount": {
+                                "type": "number",
+                                "description": "Amount of water consumed in milliliters.",
+                                "example": 500
+                              },
+                              "date": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "The timestamp of the record.",
+                                "example": "2024-11-29T11:00:00.000Z"
+                              },
+                              "currentDailyNorm": {
+                                "type": "number",
+                                "description": "The user's current daily water consumption goal in milliliters.",
+                                "example": 3000
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid or missing parameters in the request.",
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "description": "Not Found - No water records found for the specified date.",
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on the server side.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/api/water/month/{date}": {
+      "get": {
+        "tags": [
+          "Water"
+        ],
+        "summary": "Retrieve monthly water intake records",
+        "operationId": "getWaterPerMonth",
+        "description": "This endpoint allows you to retrieve all water intake records for a specific month. A valid date (ISO format) and authentication token are required.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "date",
+            "required": true,
+            "description": "The date representing the month to retrieve water intake records for (ISO format, e.g., 2024-11-01).",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2024-11-01"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved monthly water records!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully retrieved monthly water records!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "totalWater": {
+                          "type": "number",
+                          "example": 75000,
+                          "description": "The total amount of water consumed during the month in milliliters."
+                        },
+                        "dailyRecords": {
+                          "type": "array",
+                          "description": "A list of total water consumption grouped by each day of the month.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "type": "string",
+                                "format": "date",
+                                "description": "The date for which water records are aggregated.",
+                                "example": "2024-11-01"
+                              },
+                              "totalAmount": {
+                                "type": "number",
+                                "description": "Total amount of water consumed on the specific day in milliliters.",
+                                "example": 2500
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid or missing parameters in the request.",
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "description": "Not Found - No water records found for the specified month.",
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on the server side.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
     }
   },
   "components": {

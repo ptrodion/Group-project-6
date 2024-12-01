@@ -1,0 +1,63 @@
+tags:
+  - Water
+summary: Retrieve monthly water intake records
+operationId: getWaterPerMonth
+description: >
+  This endpoint allows you to retrieve all water intake records for a specific month.
+  A valid date (ISO format) and authentication token are required.
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: date
+    required: true
+    description: The date representing the month to retrieve water intake records for (ISO format, e.g., 2024-11-01).
+    schema:
+      type: string
+      format: date
+      example: "2024-11-01"
+responses:
+  '200':
+    description: Successfully retrieved monthly water records!
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Successfully retrieved monthly water records!"
+            data:
+              type: object
+              properties:
+                totalWater:
+                  type: number
+                  example: 75000
+                  description: The total amount of water consumed during the month in milliliters.
+                dailyRecords:
+                  type: array
+                  description: A list of total water consumption grouped by each day of the month.
+                  items:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                        format: date
+                        description: The date for which water records are aggregated.
+                        example: "2024-11-01"
+                      totalAmount:
+                        type: number
+                        description: Total amount of water consumed on the specific day in milliliters.
+                        example: 2500
+  '400':
+    description: Bad request - Invalid or missing parameters in the request.
+    $ref: '../../../components/responses/400.yaml'
+  '404':
+    description: Not Found - No water records found for the specified month.
+    $ref: '../../../components/responses/404.yaml'
+  '500':
+    description: Internal Server Error - Something went wrong on the server side.
+    $ref: '../../../components/responses/500.yaml'
