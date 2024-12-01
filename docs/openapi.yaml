@@ -36,7 +36,7 @@ paths:
   /api/auth/update-current-user:
     patch:
       $ref: ../swagger/paths/user/updateCurrentUserPatch.yaml
-  /api/auth/users-count:
+  /api/users-count:
     get:
       $ref: ../swagger/paths/common/countUsersGet.yaml
   /api/water:
