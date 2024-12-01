@@ -14,6 +14,7 @@
       "url": "https://warettrack.onrender.com"
     }
   ],
+  "security": [],
   "tags": [
     {
       "name": "Authentication",
@@ -47,6 +48,7 @@
           }
         ],
         "requestBody": {
+          "description": "User registration data",
           "required": true,
           "content": {
             "application/json": {
@@ -61,13 +63,15 @@
                     "type": "string",
                     "format": "email",
                     "example": "john@example.com",
-                    "description": "User's email address"
+                    "description": "The email address of the user. Must be a valid email format. **Validation rules:** - Must follow email format - Cannot contain spaces\n",
+                    "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
                   },
                   "password": {
                     "type": "string",
+                    "minLength": 6,
                     "format": "password",
                     "example": "securePassword123",
-                    "description": "User's password"
+                    "description": "The password for the account. **Validation rules:** - Minimum 6 characters long\n"
                   },
                   "language": {
                     "type": "string",
@@ -77,7 +81,7 @@
                       "ua"
                     ],
                     "example": "en",
-                    "description": "User's preferred language"
+                    "description": "Optional language preference. Supported values: en (English), de (German), ua (Ukrainian)."
                   }
                 }
               }
@@ -148,6 +152,7 @@
           }
         ],
         "requestBody": {
+          "description": "User registration data",
           "required": true,
           "content": {
             "application/json": {
@@ -162,13 +167,15 @@
                     "type": "string",
                     "format": "email",
                     "example": "john@example.com",
-                    "description": "User's email address"
+                    "description": "The email address of the user. Must be a valid email format. **Validation rules:** - Must follow email format - Cannot contain spaces\n",
+                    "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
                   },
                   "password": {
                     "type": "string",
+                    "minLength": 6,
                     "format": "password",
                     "example": "securePassword123",
-                    "description": "User's password"
+                    "description": "The password for the account. **Validation rules:** - Minimum 6 characters long\n"
                   }
                 }
               }
@@ -239,28 +246,11 @@
         ],
         "responses": {
           "204": {
-            "description": "User successfully logged out",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "User logged out successfully!"
-                    }
-                  }
-                }
-              }
-            }
+            "description": "User successfully logged out"
           },
           "401": {
-            "description": "Unauthorized - Token is missing or invalid. Make sure to provide a valid bearer token in the Authorization header.",
-            "$ref": "#/components/responses/401_expiredToken"
+            "description": "Unauthorized - User session is missing.",
+            "$ref": "#/components/responses/401_sessionNotFound"
           },
           "500": {
             "description": "Internal Server Error - Something went wrong on the server side.",
@@ -284,7 +274,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Access token successfully refreshed",
+            "description": "Session refreshed successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -304,10 +294,6 @@
                         "accessToken": {
                           "type": "string",
                           "example": "newlyGeneratedAccessToken12345"
-                        },
-                        "expiresIn": {
-                          "type": "integer",
-                          "example": 3600
                         }
                       }
                     }
@@ -316,13 +302,57 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request - The refresh token is missing or invalid.",
-            "$ref": "#/components/responses/400"
-          },
           "401": {
-            "description": "Unauthorized - The refresh token is expired or invalid.",
-            "$ref": "#/components/responses/401_expiredToken"
+            "description": "Unauthorized - There are multiple reasons for this error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "error": {
+                      "type": "string",
+                      "enum": [
+                        "SessionNotFound",
+                        "InvalidRefreshToken",
+                        "ExpiredToken"
+                      ],
+                      "example": "SessionNotFound"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User session is missing or invalid."
+                    }
+                  }
+                },
+                "examples": {
+                  "SessionNotFound": {
+                    "summary": "Missing session",
+                    "value": {
+                      "status": 401,
+                      "message": "Session not found."
+                    }
+                  },
+                  "InvalidRefreshToken": {
+                    "summary": "Invalid token",
+                    "value": {
+                      "status": 401,
+                      "message": "Invalid refresh token."
+                    }
+                  },
+                  "ExpiredToken": {
+                    "summary": "Expired token",
+                    "value": {
+                      "status": 401,
+                      "message": "Refresh token expired."
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error - Something went wrong on the server side.",
@@ -405,12 +435,17 @@
                   "id": {
                     "type": "string",
                     "example": "61e9f1f3e7b45c001ddc2e85",
-                    "description": "Unique identifier of the user"
+                    "description": "Unique identifier of the user",
+                    "minLength": 24,
+                    "maxLength": 24,
+                    "pattern": "^[a-fA-F0-9]{24}$"
                   },
                   "name": {
                     "type": "string",
                     "example": "John Doe",
-                    "description": "The user's updated name (optional)"
+                    "description": "The user's updated name (optional)",
+                    "minLength": 3,
+                    "maxLength": 20
                   },
                   "email": {
                     "type": "string",
@@ -430,17 +465,21 @@
                   "weight": {
                     "type": "integer",
                     "example": 75,
-                    "description": "The user's updated weight in kilograms (optional)"
+                    "description": "The user's updated weight in kilograms (optional)",
+                    "minimum": 0
                   },
                   "activeTime": {
                     "type": "integer",
                     "example": 1,
-                    "description": "The user's daily active time in minutes (optional)."
+                    "description": "The user's daily active time in minutes (optional).",
+                    "minimum": 0
                   },
                   "currentDailyNorm": {
                     "type": "integer",
                     "example": 2000,
-                    "description": "The user's updated daily water intake norm in milliliters (optional)"
+                    "description": "The user's updated daily water intake norm in milliliters (optional)",
+                    "minimum": 500,
+                    "maximum": 10000
                   },
                   "language": {
                     "type": "string",
@@ -494,7 +533,7 @@
             }
           },
           "400": {
-            "description": "Bad request - Invalid or missing parameters in the request body",
+            "description": "Bad request",
             "$ref": "#/components/responses/400"
           },
           "401": {
@@ -520,11 +559,6 @@
         "summary": "Get the total number of users",
         "operationId": "getStartUserCount",
         "description": "Retrieve the total number of users from the database. **Important:** A valid access token is required to access this endpoint.\n",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
         "responses": {
           "200": {
             "description": "Total number of users successfully retrieved",
@@ -585,14 +619,16 @@
                 "properties": {
                   "amount": {
                     "type": "number",
-                    "example": 50,
-                    "description": "The amount of water consumed in milliliters."
+                    "example": 250,
+                    "description": "The amount of water consumed in milliliters.",
+                    "minimum": 50
                   },
                   "date": {
                     "type": "string",
                     "format": "date-time",
                     "example": "2024-11-29T11:00:00.000Z",
-                    "description": "The date and time when the water was consumed."
+                    "description": "The date and time when the water was consumed.",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{3})?Z$"
                   }
                 }
               }
@@ -628,7 +664,6 @@
                           },
                           "date": {
                             "type": "string",
-                            "format": "date",
                             "description": "The date for which water records are aggregated.",
                             "example": "2024-11-26T15:30:45"
                           },
@@ -653,6 +688,30 @@
             "description": "Bad request - Invalid or missing parameters in the request body",
             "$ref": "#/components/responses/400"
           },
+          "401": {
+            "description": "Invalid or expired access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired access token"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error - Something went wrong on the server side.",
             "$ref": "#/components/responses/500"
@@ -661,75 +720,6 @@
       }
     },
     "/api/water/{waterId}": {
-      "get": {
-        "tags": [
-          "Water"
-        ],
-        "summary": "Retrieve a water intake record by ID",
-        "operationId": "getWaterById",
-        "description": "This endpoint allows you to retrieve a water intake record based on the provided water ID. A valid water ID is required.\n",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "waterId",
-            "required": true,
-            "description": "The unique identifier for the water intake record (must be a valid ObjectId).",
-            "schema": {
-              "type": "string",
-              "example": "60c72b2f9b1d8e6b6d2e5f53"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully updated the water record!",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "amount",
-                    "date",
-                    "currentDailyNorm",
-                    "userId"
-                  ],
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Successfully updated the water record!"
-                    },
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/water"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request - Invalid or missing parameters in the request body",
-            "$ref": "#/components/responses/400"
-          },
-          "404": {
-            "description": "Not Found - Water record not found",
-            "$ref": "#/components/responses/404"
-          },
-          "500": {
-            "description": "Internal Server Error - Something went wrong on the server side.",
-            "$ref": "#/components/responses/500"
-          }
-        }
-      },
       "patch": {
         "tags": [
           "Water"
@@ -811,7 +801,6 @@
                           },
                           "date": {
                             "type": "string",
-                            "format": "date",
                             "description": "The date for which water records are aggregated.",
                             "example": "2024-11-26T15:30:45"
                           },
@@ -835,6 +824,30 @@
           "400": {
             "description": "Bad request - Invalid or missing parameters in the request body",
             "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Invalid or expired access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired access token"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Water record not found",
@@ -877,6 +890,30 @@
           "400": {
             "description": "Bad Request - Invalid water ID format",
             "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Invalid or expired access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired access token"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Water record not found",
@@ -944,7 +981,6 @@
                           },
                           "date": {
                             "type": "string",
-                            "format": "date",
                             "description": "The date for which water records are aggregated.",
                             "example": "2024-11-26T15:30:45"
                           },
@@ -968,6 +1004,30 @@
           "400": {
             "description": "Bad request - Invalid or missing parameters in the request.",
             "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Invalid or expired access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired access token"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Not Found - No water records found for the specified date.",
@@ -1035,7 +1095,6 @@
                           },
                           "date": {
                             "type": "string",
-                            "format": "date",
                             "description": "The date for which water records are aggregated.",
                             "example": "2024-11-26T15:30:45"
                           },
@@ -1059,6 +1118,30 @@
           "400": {
             "description": "Bad request - Invalid or missing parameters in the request.",
             "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "description": "Invalid or expired access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired access token"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Not Found - No water records found for the specified month.",
@@ -1195,18 +1278,31 @@
                 "message": {
                   "type": "string",
                   "example": "Invalid credentials"
+                }
+              }
+            }
+          }
+        }
+      },
+      "401_sessionNotFound": {
+        "description": "Invalid or expired access token",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 401
                 },
-                "data": {
-                  "type": "object",
-                  "required": [
-                    "message"
-                  ],
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invalid credentials"
-                    }
-                  }
+                "message": {
+                  "type": "string",
+                  "example": "Invalid or expired access token"
                 }
               }
             }
@@ -1232,18 +1328,6 @@
                 "message": {
                   "type": "string",
                   "example": "Invalid or expired access token"
-                },
-                "data": {
-                  "type": "object",
-                  "required": [
-                    "message"
-                  ],
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invalid or expired access token"
-                    }
-                  }
                 }
               }
             }
@@ -1342,32 +1426,6 @@
           "createdAt",
           "updatedAt"
         ]
-      },
-      "water": {
-        "type": "object",
-        "properties": {
-          "amount": {
-            "type": "number",
-            "example": 50,
-            "description": "The amount of water consumed in milliliters."
-          },
-          "date": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2024-11-29T11:00:00.000Z",
-            "description": "The date and time when the water was consumed."
-          },
-          "currentDailyNorm": {
-            "type": "number",
-            "example": 2000,
-            "description": "The current daily water intake norm."
-          },
-          "userId": {
-            "type": "string",
-            "example": "60c72b2f9b1d8e6b6d2e5f53",
-            "description": "The unique identifier for the user (must be a valid ObjectId)."
-          }
-        }
       }
     }
   }

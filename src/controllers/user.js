@@ -10,7 +10,6 @@ import {
 } from '../services/user.js';
 
 export const registerController = async (req, res) => {
-  // const { email, password, language } = req.body;
   const payload = {
     language: req.body.language,
     email: req.body.email,
@@ -105,6 +104,13 @@ export const refreshTokenController = async (req, res) => {
 
 export const logoutController = async (req, res) => {
   const { sessionId } = req.cookies;
+
+  if (!sessionId) {
+    return res.status(401).json({
+      status: 401,
+      message: 'Session not found',
+    });
+  }
 
   if (sessionId) {
     await logoutUser(sessionId);

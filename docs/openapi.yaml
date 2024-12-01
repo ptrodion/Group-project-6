@@ -43,8 +43,8 @@ paths:
     post:
       $ref: ../swagger/paths/water/{id}/createWaterPost.yaml
   /api/water/{waterId}:
-    get:
-      $ref: ../swagger/paths/water/{id}/getWaterById.yaml
+    # get:
+    #   $ref: ../swagger/paths/water/{id}/getWaterById.yaml
     patch:
       $ref: ../swagger/paths/water/{id}/updateWaterByIdPatch.yaml
     delete:
@@ -60,3 +60,4 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+security: []

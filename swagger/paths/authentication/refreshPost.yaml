@@ -7,7 +7,7 @@ security:
   - bearerAuth: []
 responses:
   '200':
-    description: 'Access token successfully refreshed'
+    description: 'Session refreshed successfully'
     content:
       application/json:
         schema:
@@ -25,15 +25,42 @@ responses:
                 accessToken:
                   type: string
                   example: 'newlyGeneratedAccessToken12345'
-                expiresIn:
-                  type: integer
-                  example: 3600
-  '400':
-    description: 'Bad Request - The refresh token is missing or invalid.'
-    $ref: '../../components/responses/400.yaml'
   '401':
-    description: 'Unauthorized - The refresh token is expired or invalid.'
-    $ref: '../../components/responses/401_expiredToken.yaml'
+    description: 'Unauthorized - There are multiple reasons for this error.'
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 401
+            error:
+              type: string
+              enum:
+                - 'SessionNotFound'
+                - 'InvalidRefreshToken'
+                - 'ExpiredToken'
+              example: 'SessionNotFound'
+            message:
+              type: string
+              example: 'User session is missing or invalid.'
+        examples:
+          SessionNotFound:
+            summary: 'Missing session'
+            value:
+              status: 401
+              message: 'Session not found.'
+          InvalidRefreshToken:
+            summary: 'Invalid token'
+            value:
+              status: 401
+              message: 'Invalid refresh token.'
+          ExpiredToken:
+            summary: 'Expired token'
+            value:
+              status: 401
+              message: 'Refresh token expired.'
   '500':
     description: 'Internal Server Error - Something went wrong on the server side.'
     $ref: '../../components/responses/500.yaml'
