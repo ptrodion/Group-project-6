@@ -105,12 +105,12 @@ export const getWaterPerDay = async (userId, date) => {
     date: { $gte: startOfDayISO, $lte: endOfDayISO },
   }).lean();
 
-  if (!waterRecords) {
-    return {
-      value: [],
-      totalAmount: 0,
-    };
-  }
+  // if (!waterRecords) {
+  //   return {
+  //     value: [],
+  //     totalAmount: 0,
+  //   };
+  // }
 
   const data = waterRecords.map((record) => ({
     id: record._id,
