@@ -31,27 +31,27 @@ responses:
               type: string
               example: "Successfully retrieved monthly water records!"
             data:
-              type: object
-              properties:
-                totalWater:
-                  type: number
-                  example: 75000
-                  description: The total amount of water consumed during the month in milliliters.
-                dailyRecords:
                   type: array
-                  description: A list of total water consumption grouped by each day of the month.
+                  description: received water data for a month.
                   items:
                     type: object
                     properties:
+                      id:
+                        type: string
+                        example: "674c3649bc0f53cead7b8351"
+                        description: Water id (must be a valid ObjectId).
                       date:
                         type: string
                         format: date
                         description: The date for which water records are aggregated.
-                        example: "2024-11-01"
-                      totalAmount:
+                        example: "2024-11-26T15:30:45"
+                      amount:
                         type: number
                         description: Total amount of water consumed on the specific day in milliliters.
                         example: 2500
+                      currentDailyNorm:
+                        type: number
+                        example: 2000
   '400':
     description: Bad request - Invalid or missing parameters in the request.
     $ref: '../../../components/responses/400.yaml'
