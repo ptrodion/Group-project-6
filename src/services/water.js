@@ -1,7 +1,13 @@
 import createHttpError from 'http-errors';
 import { WaterCollection } from '../db/models/water.js';
+import { UsersCollection } from '../db/models/user.js';
 
 //creating a new record(volume,date and userId)
+
+export const getCurrentDailyNormByUser = async(userId) => {
+  return await UsersCollection.findById(userId);
+
+}
 
 export const createWater = async (payload) => {
   let { amount, date, currentDailyNorm, userId } = payload;
