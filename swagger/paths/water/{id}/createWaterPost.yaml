@@ -26,7 +26,7 @@ requestBody:
           date:
             type: string
             format: date-time
-            example: "2024-11-29T11:00:00.000Z"
+            example: "2024-11-26T15:30:45"
             description: The date and time when the water was consumed.
 responses:
   '201':
