@@ -616,27 +616,31 @@
                       "example": "Successfully created a water record!"
                     },
                     "data": {
-                      "type": "object",
-                      "properties": {
-                        "amount": {
-                          "type": "number",
-                          "example": 50
-                        },
-                        "date": {
-                          "type": "string",
-                          "example": "2024-11-29T11:00:00.000Z"
-                        },
-                        "currentDailyNorm": {
-                          "type": "number",
-                          "example": 2000
-                        },
-                        "userId": {
-                          "type": "string",
-                          "example": "60c72b2f9b1d8e6b6d2e5f53"
-                        },
-                        "id": {
-                          "type": "string",
-                          "example": "674b4aef2be12dbf558387aa"
+                      "type": "array",
+                      "description": "creating a water record.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "674c3649bc0f53cead7b8351",
+                            "description": "Water id (must be a valid ObjectId)."
+                          },
+                          "date": {
+                            "type": "string",
+                            "format": "date",
+                            "description": "The date for which water records are aggregated.",
+                            "example": "2024-11-26T15:30:45"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "description": "Total amount of water consumed on the specific day in milliliters.",
+                            "example": 2500
+                          },
+                          "currentDailyNorm": {
+                            "type": "number",
+                            "example": 2000
+                          }
                         }
                       }
                     }
@@ -795,25 +799,31 @@
                       "example": "Successfully updated the water record!"
                     },
                     "data": {
-                      "type": "object",
-                      "properties": {
-                        "amount": {
-                          "type": "number",
-                          "example": 50
-                        },
-                        "date": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2024-11-29T11:00:00.000Z"
-                        },
-                        "currentDailyNorm": {
-                          "type": "number",
-                          "example": 2000
-                        },
-                        "id": {
-                          "type": "string",
-                          "example": "60c72b2f9b1d8e6b6d2e5f53",
-                          "description": "The unique identifier for the user (must be a valid ObjectId)."
+                      "type": "array",
+                      "description": "response after data update",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "674c3649bc0f53cead7b8351",
+                            "description": "Water id (must be a valid ObjectId)."
+                          },
+                          "date": {
+                            "type": "string",
+                            "format": "date",
+                            "description": "The date for which water records are aggregated.",
+                            "example": "2024-11-26T15:30:45"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "description": "Total amount of water consumed on the specific day in milliliters.",
+                            "example": 2500
+                          },
+                          "currentDailyNorm": {
+                            "type": "number",
+                            "example": 2000
+                          }
                         }
                       }
                     }
@@ -923,7 +933,7 @@
                     },
                     "data": {
                       "type": "array",
-                      "description": "A list of total water consumption of day .",
+                      "description": "received water data for a month .",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -1014,7 +1024,7 @@
                     },
                     "data": {
                       "type": "array",
-                      "description": "A list of total water consumption grouped by each day of the month.",
+                      "description": "received water data for a month.",
                       "items": {
                         "type": "object",
                         "properties": {

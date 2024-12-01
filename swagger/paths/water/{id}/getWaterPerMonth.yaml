@@ -32,7 +32,7 @@ responses:
               example: "Successfully retrieved monthly water records!"
             data:
                   type: array
-                  description: A list of total water consumption grouped by each day of the month.
+                  description: received water data for a month.
                   items:
                     type: object
                     properties:
