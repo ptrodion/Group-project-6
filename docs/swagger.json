@@ -512,7 +512,7 @@
         }
       }
     },
-    "/api/auth/users-count": {
+    "/api/users-count": {
       "get": {
         "tags": [
           "Common"
