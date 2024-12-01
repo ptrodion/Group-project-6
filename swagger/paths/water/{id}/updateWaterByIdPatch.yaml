@@ -35,10 +35,6 @@ requestBody:
             type: number
             example: 2000
             description: The current daily water intake norm(optional).
-          userId:
-            type: string
-            example: "60c72b2f9b1d8e6b6d2e5f53"
-            description: The unique identifier for the user (must be a valid ObjectId).
 responses:
   '200':
     description: Successfully updated the water intake record
@@ -66,9 +62,10 @@ responses:
                 currentDailyNorm:
                   type: number
                   example: 2000
-                userId:
+                id:
                   type: string
                   example: "60c72b2f9b1d8e6b6d2e5f53"
+                  description: The unique identifier for the user (must be a valid ObjectId).
   '400':
     description: 'Bad request - Invalid or missing parameters in the request body'
     $ref: '../../../components/responses/400.yaml'

@@ -29,10 +29,10 @@ export const updateWaterSchema = Joi.object({
     'number.integer': 'The amount of water should be a whole number.',
 
   }),
-  date: Joi.string().required().example("2024-11-29T11:00:00.000Z").messages({
+  date: Joi.string().example("2024-11-29T11:00:00.000Z").messages({
     'string.base': 'The date must be a string.',
   }),
-   currentDailyNorm: Joi.number().required().messages({
+  currentDailyNorm: Joi.number().messages({
     'number.base': 'The currentDailyNorm must be a number.',
   }),
 })
