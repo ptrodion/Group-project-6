@@ -6,16 +6,20 @@ import {
   deleteWaterById,
   getWaterPerDay,
   getWaterPerMonth,
+  getCurrentDailyNormByUser,
 } from '../services/water.js';
 
 export const createWaterController = async (req, res) => {
-  const userId = req.user; //id from authMiddleware
-  const { amount, date, currentDailyNorm } = req.body;
-  //data to be transfered to the service
+  const userId = req.user;
+
+  const currentUser =  await getCurrentDailyNormByUser(userId)
+
+  const { amount, date } = req.body;
+
   const data = {
     amount,
     date,
-    currentDailyNorm,
+    currentDailyNorm : currentUser.currentDailyNorm,
     userId,
   };
 

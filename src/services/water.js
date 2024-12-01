@@ -1,7 +1,13 @@
 import createHttpError from 'http-errors';
 import { WaterCollection } from '../db/models/water.js';
+import { UsersCollection } from '../db/models/user.js';
 
 //creating a new record(volume,date and userId)
+
+export const getCurrentDailyNormByUser = async(userId) => {
+  return await UsersCollection.findById(userId);
+
+}
 
 export const createWater = async (payload) => {
   let { amount, date, currentDailyNorm, userId } = payload;
@@ -89,7 +95,7 @@ export const getWaterPerDay = async (userId, date) => {
   // get the end of the day (23:59:59.999)
   const endOfDay = new Date(dateObj);
   endOfDay.setUTCHours(23, 59, 59, 999);
- 
+
   // convert to ISO strings for filtering in  MongoDB
   const startOfDayISO = startOfDay.toISOString();
   const endOfDayISO = endOfDay.toISOString();
