@@ -114,8 +114,8 @@ export const getWaterPerDay = async (userId, date) => {
 
   const data = waterRecords.map((record) => ({
     id: record._id,
-    amount: record.amount,
     date: record.date,
+    amount: record.amount,
     currentDailyNorm: record.currentDailyNorm,
   }));
 
@@ -171,7 +171,7 @@ export const getWaterPerMonth = async (userId, date) => {
 const data = waterRecords.map((record) => ({
     id: record._id,
     date: record.date,
-    totalAmount: record.amount,
+    amount: record.amount,
     currentDailyNorm: record.currentDailyNorm,
   }));
 
