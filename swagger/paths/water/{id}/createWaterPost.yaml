@@ -28,10 +28,6 @@ requestBody:
             format: date-time
             example: "2024-11-29T11:00:00.000Z"
             description: The date and time when the water was consumed.
-          currentDailyNorm:
-            type: number
-            example: 2000
-            description: The current daily water intake norm.
 responses:
   '201':
     description: Successfully created a water record!
