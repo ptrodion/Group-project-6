@@ -4,14 +4,13 @@ import { UsersCollection } from '../db/models/user.js';
 
 //creating a new record(volume,date and userId)
 
-export const getCurrentDailyNormByUser = async(userId) => {
+export const getCurrentDailyNormByUser = async (userId) => {
   return await UsersCollection.findById(userId);
-
-}
+};
 
 export const createWater = async (payload) => {
   let { amount, date, currentDailyNorm, userId } = payload;
-  const water =  await WaterCollection.create({
+  const water = await WaterCollection.create({
     amount,
     date: date,
     currentDailyNorm,
@@ -107,24 +106,24 @@ export const getWaterPerDay = async (userId, date) => {
   }).lean();
 
   if (!waterRecords) {
-     return {
+    return {
       value: [],
       totalAmount: 0,
     };
   }
 
-  const allRecords = waterRecords.map((record) => ({
+  const data = waterRecords.map((record) => ({
     id: record._id,
     amount: record.amount,
     date: record.date,
     currentDailyNorm: record.currentDailyNorm,
   }));
 
- const totalAmount = waterRecords.reduce((acc, curr) => acc + curr.amount, 0);
+  // const totalAmount = waterRecords.reduce((acc, curr) => acc + curr.amount, 0);
 
   return {
-    allRecords,
-    totalAmount,
+    data
+    // totalAmount,
   };
 };
 
@@ -144,36 +143,45 @@ export const getWaterPerMonth = async (userId, date) => {
   }).lean();
 
   if (!waterRecords || waterRecords.length === 0) {
-
     throw createHttpError(400, 'No records found');
   }
 
-const groupedByDay = {};
+  // const groupedByDay = {};
 
-waterRecords.forEach((record) => {
-  console.log("object", record);
-  const day = record.date.split("T")[0];
+  // waterRecords.forEach((record) => {
+  //   console.log('object', record);
+  //   const day = record.date.split('T')[0];
 
-  if (!groupedByDay[day]) {
-    groupedByDay[day] = {
-      totalAmount: 0,
-      currentDailyNorm: record.currentDailyNorm,
-    };
-  }
+  //   if (!groupedByDay[day]) {
+  //     groupedByDay[day] = {
+  //       totalAmount: 0,
+  //       currentDailyNorm: record.currentDailyNorm,
+  //     };
+  //   }
 
-  groupedByDay[day].totalAmount += record.amount;
-});
+  //   groupedByDay[day].totalAmount += record.amount;
+  // });
 
-const dailyRecords = Object.keys(groupedByDay).map((date) => ({
-  date,
-  totalAmount: groupedByDay[date].totalAmount,
-  currentDailyNorm: groupedByDay[date].currentDailyNorm,
-}));
+  // const dailyRecords = Object.keys(groupedByDay).map((date) => ({
+  //   date,
+  //   totalAmount: groupedByDay[date].totalAmount,
+  //   currentDailyNorm: groupedByDay[date].currentDailyNorm,
+  // }));
 
-  const totalWater = dailyRecords.reduce((sum, record) => sum + record.totalAmount, 0);
+const data = waterRecords.map((record) => ({
+    id: record._id,
+    date: record.date,
+    totalAmount: record.amount,
+    currentDailyNorm: record.currentDailyNorm,
+  }));
+
+  // const totalWater = dailyRecords.reduce(
+  //   (sum, record) => sum + record.totalAmount,
+  //   0,
+  // );
 
   return {
-    totalWater,
-    dailyRecords,
+    // totalWater,
+    data,
   };
 };

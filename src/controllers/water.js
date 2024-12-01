@@ -84,9 +84,9 @@ export const getWaterPerDayController = async (req, res, next) => {
   const userId = req.user; //from authMiddleware
   const { date } = req.params; //from query parametrs
 
-  const { totalAmount, allRecords } = await getWaterPerDay(userId, date);
+  const { data } = await getWaterPerDay(userId, date);
 
-  if (!totalAmount || !allRecords) {
+  if (!data) {
     //return { totalWater: 0, dailyRecords: [] };
     throw createHttpError(400, 'No records found');
   }
@@ -94,10 +94,7 @@ export const getWaterPerDayController = async (req, res, next) => {
   res.status(200).json({
     status: 200,
     message: 'Successfully retrieved daily water records!',
-    data: {
-      totalAmount,
-      records: allRecords,
-    },
+    data
   });
 };
 
@@ -106,15 +103,11 @@ export const getWaterPerMonthController = async (req, res, next) => {
   const { date } = req.params; // ISO date string from request parametrs
 
   // call updated service
-    const { totalWater, dailyRecords } = await getWaterPerMonth(userId, date);
+    const { data } = await getWaterPerMonth(userId, date);
 
     res.status(200).json({
       status: 200,
       message: "Successfully retrieved monthly water records!",
-      data: {
-        totalWater,
-        dailyRecords,
-      },
+      data
     });
-
 };
