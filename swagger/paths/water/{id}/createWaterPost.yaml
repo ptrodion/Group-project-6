@@ -21,13 +21,15 @@ requestBody:
         properties:
           amount:
             type: number
-            example: 50
+            example: 250
             description: The amount of water consumed in milliliters.
+            minimum: 50
           date:
             type: string
             format: date-time
             example: "2024-11-26T15:30:45"
             description: The date and time when the water was consumed.
+            pattern: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{3})?Z$"
 responses:
   '201':
     description: Successfully created a water record!
@@ -54,7 +56,6 @@ responses:
                         description: Water id (must be a valid ObjectId).
                       date:
                         type: string
-                        format: date
                         description: The date for which water records are aggregated.
                         example: "2024-11-26T15:30:45"
                       amount:
@@ -67,6 +68,22 @@ responses:
   '400':
     description: 'Bad request - Invalid or missing parameters in the request body'
     $ref: '../../../components/responses/400.yaml'
+  '401':
+    description: Invalid or expired access token
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: Invalid or expired access token
   '500':
     description: 'Internal Server Error - Something went wrong on the server side.'
     $ref: '../../../components/responses/500.yaml'

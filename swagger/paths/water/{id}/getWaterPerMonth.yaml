@@ -42,7 +42,6 @@ responses:
                         description: Water id (must be a valid ObjectId).
                       date:
                         type: string
-                        format: date
                         description: The date for which water records are aggregated.
                         example: "2024-11-26T15:30:45"
                       amount:
@@ -55,6 +54,22 @@ responses:
   '400':
     description: Bad request - Invalid or missing parameters in the request.
     $ref: '../../../components/responses/400.yaml'
+  '401':
+    description: Invalid or expired access token
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: Invalid or expired access token
   '404':
     description: Not Found - No water records found for the specified month.
     $ref: '../../../components/responses/404.yaml'

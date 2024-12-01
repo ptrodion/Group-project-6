@@ -8,10 +8,8 @@ import compression from 'compression';
 import { env } from './utils/env.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
-import commonRouter from './routers/common.js';
-import userRouter from './routers/user.js';
-import waterRouter from './routers/water.js';
 import { swaggerDocs } from './middlewares/swaggerDocs.js';
+import apiRouter from './routers/apiRouter.js';
 
 export const setupServer = () => {
   const app = express();
@@ -23,18 +21,16 @@ export const setupServer = () => {
   app.use(cors());
   app.use(cookieParser());
 
-  app.use('/api', commonRouter);
-  app.use('/api/auth', userRouter);
+  app.use('/api', apiRouter);
   app.use('/photos', express.static(path.resolve('src', 'public/photos')));
-  app.use('/api', waterRouter);
   app.use('/api-docs', swaggerDocs());
-  // app.use(
-  //   pino({
-  //     transport: {
-  //       target: 'pino-pretty',
-  //     },
-  //   }),
-  // );
+  app.use(
+    pino({
+      transport: {
+        target: 'pino-pretty',
+      },
+    }),
+  );
 
   app.use('*', notFoundHandler);
   app.use(errorHandler);

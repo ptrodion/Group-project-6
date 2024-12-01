@@ -14,11 +14,3 @@ content:
         message:
           type: string
           example: Invalid credentials
-        data:
-          type: object
-          required:
-            - message
-          properties:
-            message:
-              type: string
-              example: 'Invalid credentials'
