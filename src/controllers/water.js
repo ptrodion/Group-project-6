@@ -28,7 +28,12 @@ export const createWaterController = async (req, res) => {
   res.status(201).json({
     status: 201,
     message: 'Successfully created a water record!',
-    data: water,
+    data: {
+      id: water._id,
+      date: water.date,
+      amount: water.amount,
+      currentDailyNorm: water.currentDailyNorm,
+    },
   });
 };
 
@@ -45,7 +50,12 @@ export const getWaterByIdController = async (req, res, next) => {
   res.status(200).json({
     status: 200,
     message: `Successfully found water record with ID: ${waterId}!`,
-    data: water,
+    data:{
+      id: water._id,
+      date: water.date,
+      amount: water.amount,
+      currentDailyNorm: water.currentDailyNorm,
+    }
   });
 };
 
@@ -63,7 +73,12 @@ export const updateWaterController = async (req, res, next) => {
   res.status(200).json({
     status: 200,
     message: 'Successfully updated the water record!',
-    data: updatedWater,
+    data:{
+      id: updatedWater._id,
+      date: updatedWater.date,
+      amount: updatedWater.amount,
+      currentDailyNorm: updatedWater.currentDailyNorm,
+    }
   });
 };
 

@@ -43,23 +43,27 @@ responses:
               type: string
               example: "Successfully created a water record!"
             data:
-              type: object
-              properties:
-                amount:
-                  type: number
-                  example: 50
-                date:
-                  type: string
-                  example: "2024-11-29T11:00:00.000Z"
-                currentDailyNorm:
-                  type: number
-                  example: 2000
-                userId:
-                  type: string
-                  example: "60c72b2f9b1d8e6b6d2e5f53"
-                id:
-                  type: string
-                  example: "674b4aef2be12dbf558387aa"
+              type: array
+              description: creating a water record.
+              items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "674c3649bc0f53cead7b8351"
+                        description: Water id (must be a valid ObjectId).
+                      date:
+                        type: string
+                        format: date
+                        description: The date for which water records are aggregated.
+                        example: "2024-11-26T15:30:45"
+                      amount:
+                        type: number
+                        description: Total amount of water consumed on the specific day in milliliters.
+                        example: 2500
+                      currentDailyNorm:
+                        type: number
+                        example: 2000
   '400':
     description: 'Bad request - Invalid or missing parameters in the request body'
     $ref: '../../../components/responses/400.yaml'
