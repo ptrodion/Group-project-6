@@ -28,13 +28,13 @@ export const setupServer = () => {
   app.use('/photos', express.static(path.resolve('src', 'public/photos')));
   app.use('/api', waterRouter);
   app.use('/api-docs', swaggerDocs());
-  app.use(
-    pino({
-      transport: {
-        target: 'pino-pretty',
-      },
-    }),
-  );
+  // app.use(
+  //   pino({
+  //     transport: {
+  //       target: 'pino-pretty',
+  //     },
+  //   }),
+  // );
 
   app.use('*', notFoundHandler);
   app.use(errorHandler);

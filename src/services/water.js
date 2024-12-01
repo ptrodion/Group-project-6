@@ -89,7 +89,7 @@ export const getWaterPerDay = async (userId, date) => {
   // get the end of the day (23:59:59.999)
   const endOfDay = new Date(dateObj);
   endOfDay.setUTCHours(23, 59, 59, 999);
- 
+
   // convert to ISO strings for filtering in  MongoDB
   const startOfDayISO = startOfDay.toISOString();
   const endOfDayISO = endOfDay.toISOString();
@@ -122,7 +122,6 @@ export const getWaterPerDay = async (userId, date) => {
   };
 };
 
-//get water consumption per month
 export const getWaterPerMonth = async (userId, date) => {
 
   const startOfMonth = new Date(date);
@@ -133,34 +132,38 @@ export const getWaterPerMonth = async (userId, date) => {
   endOfMonth.setUTCMonth(endOfMonth.getUTCMonth() + 1);
   endOfMonth.setUTCHours(23, 59, 59, 999);
 
-  // get all the records for the month
   const waterRecords = await WaterCollection.find({
     userId,
     date: { $gte: startOfMonth.toISOString(), $lte: endOfMonth.toISOString() },
   }).lean();
 
   if (!waterRecords || waterRecords.length === 0) {
-    //return { totalWater: 0, dailyRecords: [] };
+
     throw createHttpError(400, 'No records found');
   }
 
-  // group records by days
-  const groupedByDay = {};
-  waterRecords.forEach((record) => {
-    const day = record.date.split("T")[0]; // extract date without time
-    if (!groupedByDay[day]) {
-      groupedByDay[day] = 0;
-    }
-    groupedByDay[day] += record.amount;
-  });
+const groupedByDay = {};
 
-  // convert object to array
-  const dailyRecords = Object.keys(groupedByDay).map((date) => ({
-    date,
-    totalAmount: groupedByDay[date],
-  }));
+waterRecords.forEach((record) => {
+  console.log("object", record);
+  const day = record.date.split("T")[0];
 
-  // total volume of water
+  if (!groupedByDay[day]) {
+    groupedByDay[day] = {
+      totalAmount: 0,
+      currentDailyNorm: record.currentDailyNorm,
+    };
+  }
+
+  groupedByDay[day].totalAmount += record.amount;
+});
+
+const dailyRecords = Object.keys(groupedByDay).map((date) => ({
+  date,
+  totalAmount: groupedByDay[date].totalAmount,
+  currentDailyNorm: groupedByDay[date].currentDailyNorm,
+}));
+
   const totalWater = dailyRecords.reduce((sum, record) => sum + record.totalAmount, 0);
 
   return {
