@@ -22,7 +22,7 @@ const userRouter = Router();
 
 userRouter.post(
   '/register',
-  upload.single('avatarUrl'),
+  upload.single('avatarUrlLocal'),
   validateBody(registerUserSchema),
   ctrlWrapper(registerController),
 );
@@ -34,14 +34,14 @@ userRouter.post(
 
 userRouter.get(
   '/current',
-  upload.single('avatarUrl'),
+  upload.single('avatarUrlLocal'),
   authMiddleware,
   ctrlWrapper(getCurrentUserController),
 );
 
 userRouter.patch(
   '/update-current-user',
-  upload.single('avatarUrl'),
+  upload.single('avatarUrlLocal'),
   validateBody(updateCurrentUserSchema),
   authMiddleware,
   ctrlWrapper(updateCurrentUserController),
