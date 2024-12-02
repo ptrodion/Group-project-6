@@ -25,6 +25,11 @@ responses:
                 accessToken:
                   type: string
                   example: 'newlyGeneratedAccessToken12345'
+                  description: JWT token for accessing protected resources
+                refreshToken:
+                  type: string
+                  example: "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG"
+                  description: JWT token for accessing protected resources
   '401':
     description: 'Unauthorized - There are multiple reasons for this error.'
     content:

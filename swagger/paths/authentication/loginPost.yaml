@@ -58,6 +58,10 @@ responses:
                     type: string
                     example: "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG"
                     description: JWT token for accessing protected resources
+                  refreshToken:
+                    type: string
+                    example: "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG"
+                    description: JWT token for accessing protected resources
   '400':
     description: 'Bad request - Invalid or missing parameters in the request body'
     $ref: '../../components/responses/400.yaml'

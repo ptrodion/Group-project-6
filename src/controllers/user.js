@@ -50,6 +50,7 @@ export const loginController = async (req, res) => {
     message: 'Logged in successfully!',
     data: {
       accessToken: session.accessToken,
+      refreshToken: session.refreshToken,
     },
   });
 };
@@ -78,9 +79,10 @@ export const updateCurrentUserController = async (req, res) => {
 };
 
 export const refreshTokenController = async (req, res) => {
-  const { sessionId, refreshToken } = req.cookies;
+  // const { sessionId, refreshToken } = req.cookies;
+  const {refreshToken } = req.body;
 
-  const session = await refreshSession(sessionId, refreshToken);
+  const session = await refreshSession(refreshToken);
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
@@ -98,6 +100,7 @@ export const refreshTokenController = async (req, res) => {
     message: 'Session refreshed successfully!',
     data: {
       accessToken: session.accessToken,
+      refreshToken: session.refreshToken,
     },
   });
 };

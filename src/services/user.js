@@ -114,8 +114,8 @@ export const loginUser = async (email, password) => {
   return await createAndSaveSession(userId);
 };
 
-export const refreshSession = async (sessionId, refreshToken) => {
-  const session = await SessionCollection.findById(sessionId);
+export const refreshSession = async (refreshToken) => {
+  const session = await SessionCollection.findOne({refreshToken});
 
 
   if (!session) {
