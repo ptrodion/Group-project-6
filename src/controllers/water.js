@@ -8,7 +8,7 @@ import {
   getWaterPerMonth,
   getCurrentDailyNormByUser,
 } from '../services/water.js';
-import { isValidDate, isValidMonthDate } from '..//middlewares/isValidDate.js';
+import { isValidDate} from '..//middlewares/isValidDate.js';
 
 export const createWaterController = async (req, res) => {
   const userId = req.user;
@@ -101,7 +101,7 @@ export const getWaterPerDayController = async (req, res, next) => {
   const userId = req.user; //from authMiddleware
   const { date } = req.params; //from query parametrs
 
-  if (!isValidDate(date)) {
+     if (!isValidDate(date)) {
     throw createHttpError(400, 'Invalid date format. Please use YYYY-MM-DD.');
 }
 
@@ -121,10 +121,10 @@ export const getWaterPerMonthController = async (req, res, next) => {
   const userId = req.user; // userId from authMiddleware
   const { date } = req.params; // ISO date string from request parametrs
 
-  if (!date || !isValidMonthDate(date)) {
-    throw createHttpError(400, 'Invalid date format. Please use YYYY-MM.');
-}
 
+  if (!isValidDate(date)) {
+    throw createHttpError(400, 'Invalid date format. Please use YYYY-MM-DD.');
+}
   // call updated service
     const { data } = await getWaterPerMonth(userId, date);
 
