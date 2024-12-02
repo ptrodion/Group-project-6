@@ -36,7 +36,7 @@
       maximum: 5000
       example: 1500
       description: Daily water intake norm in milliliters
-    avatarUrlLocal:
+    avatarUrl:
       type: string
       format: binari
       example: "https://example.com/avatar.jpg"
