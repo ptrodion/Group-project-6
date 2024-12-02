@@ -18,7 +18,7 @@ requestBody:
           refreshToken:
             type: string
             example: "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG"
-            description: JWT token for accessing protected resources
+            description: JWT token for accessing protected resources.
 responses:
   '200':
     description: 'Session refreshed successfully'
