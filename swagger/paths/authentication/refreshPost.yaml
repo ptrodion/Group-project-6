@@ -5,6 +5,20 @@ operationId: refreshToken
 description: 'Refresh the access token using a valid refresh token. **Important:** You must provide a valid refresh token to access this resource.'
 security:
   - bearerAuth: []
+requestBody:
+  description: 'Refresh token'
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - refreshToken
+        properties:
+          refreshToken:
+            type: string
+            example: "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG"
+            description: JWT token for accessing protected resources
 responses:
   '200':
     description: 'Session refreshed successfully'
