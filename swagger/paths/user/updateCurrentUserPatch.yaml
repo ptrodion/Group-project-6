@@ -60,12 +60,7 @@ requestBody:
                 - ua
               example: "en"
               description: "The user's preferred language for communication and system notifications(optional)"
-          avatarUrlLocal:
-            type: string
-            format: binary
-            example: "https://example.com/avatar.jpg"
-            description: "The URL for the user's new avatar image (optional)"
-          avatarUrlCloudinary:
+          avatarUrl:
             type: string
             format: binary
             example: "https://example.com/avatar.jpg"
