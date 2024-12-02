@@ -14,7 +14,6 @@ import { requestResetToken } from '../services/user.js';
 import { resetPassword } from '../services/user.js';
 
 export const registerController = async (req, res) => {
-  // const { email, password, language } = req.body;
   const payload = {
     language: req.body.language,
     email: req.body.email,
@@ -55,6 +54,7 @@ export const loginController = async (req, res) => {
     message: 'Logged in successfully!',
     data: {
       accessToken: session.accessToken,
+      refreshToken: session.refreshToken,
     },
   });
 };
@@ -83,9 +83,10 @@ export const updateCurrentUserController = async (req, res) => {
 };
 
 export const refreshTokenController = async (req, res) => {
-  const { sessionId, refreshToken } = req.cookies;
+  // const { sessionId, refreshToken } = req.cookies;
+  const {refreshToken } = req.body;
 
-  const session = await refreshSession(sessionId, refreshToken);
+  const session = await refreshSession(refreshToken);
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
@@ -103,12 +104,20 @@ export const refreshTokenController = async (req, res) => {
     message: 'Session refreshed successfully!',
     data: {
       accessToken: session.accessToken,
+      refreshToken: session.refreshToken,
     },
   });
 };
 
 export const logoutController = async (req, res) => {
   const { sessionId } = req.cookies;
+
+  if (!sessionId) {
+    return res.status(401).json({
+      status: 401,
+      message: 'Session not found',
+    });
+  }
 
   if (sessionId) {
     await logoutUser(sessionId);

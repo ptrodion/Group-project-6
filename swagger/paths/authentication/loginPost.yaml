@@ -6,6 +6,7 @@ description: 'Login a new user in the system'
 security:
   - bearerAuth: []
 requestBody:
+  description: 'User registration data'
   required: true
   content:
     application/json:
@@ -19,12 +20,21 @@ requestBody:
             type: string
             format: email
             example: john@example.com
-            description: User's email address
+            description: >
+              The email address of the user. Must be a valid email format.
+              **Validation rules:**
+              - Must follow email format
+              - Cannot contain spaces
+            pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
           password:
             type: string
+            minLength: 6
             format: password
             example: "securePassword123"
-            description: User's password
+            description: >
+              The password for the account.
+              **Validation rules:**
+              - Minimum 6 characters long
 responses:
   '200':
     description: Logged in successfully!
@@ -45,6 +55,10 @@ responses:
                   - accessToken
                 properties:
                   accessToken:
+                    type: string
+                    example: "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG"
+                    description: JWT token for accessing protected resources
+                  refreshToken:
                     type: string
                     example: "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG"
                     description: JWT token for accessing protected resources

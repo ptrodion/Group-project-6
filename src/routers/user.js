@@ -8,16 +8,15 @@ import {
   getCurrentUserController,
   updateCurrentUserController,
 } from '../controllers/user.js';
-import { authMiddleware } from '../middlewares/authMiddleware.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateBody } from '../middlewares/validateBody.js';
+import { upload } from '../middlewares/multer.js';
+import { authMiddleware } from '../middlewares/authMiddleware.js';
 import {
   loginUserSchema,
   registerUserSchema,
   updateCurrentUserSchema,
 } from '../validation/user.js';
-// import { isValidId } from '../middlewares/isValidId.js';
-import { upload } from '../middlewares/multer.js';
 
 import { requestResetEmailSchema } from '../validation/user.js';
 import { requestResetEmailController } from '../controllers/user.js';
@@ -40,7 +39,6 @@ userRouter.post(
 
 userRouter.get(
   '/current',
-  // isValidId,
   upload.single('avatarUrl'),
   authMiddleware,
   ctrlWrapper(getCurrentUserController),
@@ -48,7 +46,6 @@ userRouter.get(
 
 userRouter.patch(
   '/update-current-user',
-  // isValidId,
   upload.single('avatarUrl'),
   validateBody(updateCurrentUserSchema),
   authMiddleware,

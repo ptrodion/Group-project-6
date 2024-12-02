@@ -18,6 +18,22 @@ parameters:
 responses:
   '204':
     description: Successfully deleted the water intake record
+  '401':
+    description: Invalid or expired access token
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: Invalid or expired access token
   '400':
     description: Bad Request - Invalid water ID format
     $ref: '../../../components/responses/400.yaml'
