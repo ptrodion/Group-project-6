@@ -180,7 +180,7 @@ export const updateUser = async (userId, updateData, file) => {
 
   const updatedUser = await UsersCollection.findByIdAndUpdate(
     userId,
-    updateData,
+    { ...updateData }, // Оновлені дані
     {
       new: true,
       runValidators: true,
@@ -245,7 +245,7 @@ export const resetPassword = async (payload) => {
 
   const user = await UsersCollection.findOne({
     email: entries.email,
-    id: entries.sub,
+    _id: entries.sub,
   });
 
   if (!user) {
@@ -255,7 +255,7 @@ export const resetPassword = async (payload) => {
   const encryptedPassword = await bcrypt.hash(payload.password, 10);
 
   await UsersCollection.updateOne(
-    { id: user._id },
+    { _id: user._id },
     { password: encryptedPassword },
   );
 };
