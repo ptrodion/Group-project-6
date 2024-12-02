@@ -118,20 +118,18 @@ export const refreshSession = async (refreshToken) => {
 
 
   if (!session) {
-    // throw createHttpError(401, 'Session not found');
-    throw createHttpError(1, '1');
+    throw createHttpError(401, 'Session not found');
   }
 
   if (session.refreshToken !== refreshToken) {
-    // throw createHttpError(401, 'Invalid refresh token');
-    throw createHttpError(2, '2');
+    throw createHttpError(401, 'Invalid refresh token');
   }
 
   if (new Date() > session.refreshTokenValidUntil) {
-    throw createHttpError(3, '3');
+    throw createHttpError(401, 'Refresh token expired');
   }
 
-  await SessionCollection.deleteOne({ _id: session._id });
+  await SessionCollection.deleteOne({ refreshToken });
   return await createAndSaveSession(session.userId);
 };
 
