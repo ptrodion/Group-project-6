@@ -33,10 +33,8 @@ export const loginUserSchema = Joi.object({
 });
 
 export const updateCurrentUserSchema = Joi.object({
-  name: Joi.string().min(3).max(20).messages({
+  name: Joi.string().allow('').messages({
     'string.base': 'Username should be a string',
-    'string.min': 'Username should have at least 3 characters',
-    'string.max': 'Username should have at most 20 characters',
   }),
   email: Joi.string()
     .email()
@@ -45,10 +43,6 @@ export const updateCurrentUserSchema = Joi.object({
       'string.pattern.base': 'Please enter a valid email address',
       'any.required': 'email is required',
     }),
-  password: Joi.string().min(6).messages({
-    'string.min': 'Password should be at least 6 characters long',
-    'any.required': 'Password is required',
-  }),
   gender: Joi.string().valid('woman', 'man'),
   currentDailyNorm: Joi.number().integer().min(50).max(5000).messages({
     'any.required': 'CurrentDailyNorm is required',

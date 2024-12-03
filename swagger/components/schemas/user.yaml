@@ -41,11 +41,6 @@
       format: binari
       example: "https://example.com/avatar.jpg"
       description: URL of the user's avatar
-    avatarUrlCloudinary:
-      type: string
-      format: binari
-      example: "https://example.com/avatar.jpg"
-      description: URL of the user's avatar
     languages:
       type: string
       enum:
