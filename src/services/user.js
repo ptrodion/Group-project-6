@@ -225,17 +225,19 @@ export const loginOrRegisterUser = async (payload) => {
 
     await SessionCollection.deleteMany({ userId: user._id });
 }
-    const newSession = createSession();
+    // const newSession = createSession();
 
-    const session =  await SessionCollection.create({
-      userId: user._id,
-      ...newSession,
-    });
+    // await SessionCollection.deleteOne({ refreshToken });
+    const session = await createAndSaveSession(user._id);
+
+    // const session =  await SessionCollection.create({
+    //   userId: user._id,
+    //   ...newSession,
+    // });
     return {
       _id: session._id,
       refreshToken: session.refreshToken,
-      accessToken: newSession.accessToken,
-     
+      accessToken: session.accessToken,
   };
   };
 
