@@ -103,7 +103,7 @@ export const registerUser = async (payload, file) => {
   return newUser.email;
 };
 
-export const loginUser = async (email, password, language) => {
+export const loginUser = async (email, password) => {
   const user = await UsersCollection.findOne({
     email: email.toLowerCase(),
   });
@@ -120,7 +120,7 @@ export const loginUser = async (email, password, language) => {
 
   await SessionCollection.deleteOne({ userId });
 
-  return await createAndSaveSession(userId, language);
+  return await createAndSaveSession(userId);
 };
 
 export const refreshSession = async (refreshToken) => {
@@ -150,6 +150,15 @@ export const logoutUser = async (sessionId) => {
   return await SessionCollection.deleteOne({ _id: sessionId });
 };
 
+export const getCurrentUserByEmail = async (email) => {
+  const user = await UsersCollection.findOne({ email });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  return user;
+};
 export const getCurrentUser = async (userId) => {
   const user = await UsersCollection.findById(userId);
 

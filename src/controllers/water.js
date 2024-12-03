@@ -6,21 +6,21 @@ import {
   deleteWaterById,
   getWaterPerDay,
   getWaterPerMonth,
-  getCurrentDailyNormByUser,
 } from '../services/water.js';
-import { isValidDate} from '..//middlewares/isValidDate.js';
+import { isValidDate } from '..//middlewares/isValidDate.js';
+import { getCurrentUser } from '../services/user.js';
 
 export const createWaterController = async (req, res) => {
   const userId = req.user;
 
-  const currentUser =  await getCurrentDailyNormByUser(userId);
+  const currentUser = await getCurrentUser(userId);
 
   const { amount, date } = req.body;
 
   const data = {
     amount,
     date,
-    currentDailyNorm : currentUser.currentDailyNorm,
+    currentDailyNorm: currentUser.currentDailyNorm,
     userId,
   };
 
@@ -51,12 +51,12 @@ export const getWaterByIdController = async (req, res, next) => {
   res.status(200).json({
     status: 200,
     message: `Successfully found water record with ID: ${waterId}!`,
-    data:{
+    data: {
       id: water._id,
       date: water.date,
       amount: water.amount,
       currentDailyNorm: water.currentDailyNorm,
-    }
+    },
   });
 };
 
@@ -74,12 +74,12 @@ export const updateWaterController = async (req, res, next) => {
   res.status(200).json({
     status: 200,
     message: 'Successfully updated the water record!',
-    data:{
+    data: {
       id: updatedWater._id,
       date: updatedWater.date,
       amount: updatedWater.amount,
       currentDailyNorm: updatedWater.currentDailyNorm,
-    }
+    },
   });
 };
 
@@ -97,23 +97,25 @@ export const deleteWaterController = async (req, res, next) => {
 };
 
 export const getWaterPerDayController = async (req, res, next) => {
-
   const userId = req.user; //from authMiddleware
   const { date } = req.params; //from query parametrs
 
-     if (!isValidDate(date)) {
+  if (!isValidDate(date)) {
     throw createHttpError(400, 'Invalid date format. Please use YYYY-MM-DD.');
-}
+  }
 
   const { data } = await getWaterPerDay(userId, date);
 
   if (!data || data.length === 0) {
-    throw createHttpError(404, 'No water records found for the specified date.');
+    throw createHttpError(
+      404,
+      'No water records found for the specified date.',
+    );
   }
   res.status(200).json({
     status: 200,
     message: 'Successfully retrieved daily water records!',
-    data
+    data,
   });
 };
 
@@ -121,16 +123,15 @@ export const getWaterPerMonthController = async (req, res, next) => {
   const userId = req.user; // userId from authMiddleware
   const { date } = req.params; // ISO date string from request parametrs
 
-
   if (!isValidDate(date)) {
     throw createHttpError(400, 'Invalid date format. Please use YYYY-MM-DD.');
-}
+  }
   // call updated service
-    const { data } = await getWaterPerMonth(userId, date);
+  const { data } = await getWaterPerMonth(userId, date);
 
-    res.status(200).json({
-      status: 200,
-      message: "Successfully retrieved monthly water records!",
-      data
-    });
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully retrieved monthly water records!',
+    data,
+  });
 };

@@ -5,6 +5,7 @@ import {
   refreshSession,
   updateUser,
   getCurrentUser,
+  getCurrentUserByEmail,
   // requestResetEmail,
   // resetPassword,
 } from '../services/user.js';
@@ -34,9 +35,10 @@ export const registerController = async (req, res) => {
 };
 
 export const loginController = async (req, res) => {
-  const { email, password, language } = req.body;
+  const { email, password } = req.body;
 
-  const session = await loginUser(email, password, language);
+  const session = await loginUser(email, password);
+  const user = await getCurrentUserByEmail(email);
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
@@ -49,7 +51,7 @@ export const loginController = async (req, res) => {
     expires: session.refreshTokenValidUntil,
   });
 
-  res.cookie('language', language, {
+  res.cookie('language', user.language, {
     httpOnly: false, // Дозволяє доступ на фронтенді
     secure: true,
   });
@@ -60,7 +62,7 @@ export const loginController = async (req, res) => {
     data: {
       accessToken: session.accessToken,
       refreshToken: session.refreshToken,
-      language,
+      language: user.language,
     },
   });
 };
