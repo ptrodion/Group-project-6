@@ -71,3 +71,7 @@ export const updateCurrentUserSchema = Joi.object({
   }),
   language: Joi.string().valid('en', 'de', 'ua'),
 });
+
+export const confirmOAuthSchema = Joi.object({
+  code: Joi.string().required(),
+});
