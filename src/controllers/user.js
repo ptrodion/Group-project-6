@@ -5,6 +5,7 @@ import {
   refreshSession,
   updateUser,
   getCurrentUser,
+  getCurrentUserByEmail,
   // requestResetEmail,
   // resetPassword,
 } from '../services/user.js';
@@ -37,6 +38,7 @@ export const loginController = async (req, res) => {
   const { email, password } = req.body;
 
   const session = await loginUser(email, password);
+  const user = await getCurrentUserByEmail(email);
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
@@ -49,12 +51,18 @@ export const loginController = async (req, res) => {
     expires: session.refreshTokenValidUntil,
   });
 
+  res.cookie('language', user.language, {
+    httpOnly: false, // Дозволяє доступ на фронтенді
+    secure: true,
+  });
+
   res.status(200).json({
     status: 200,
     message: 'Logged in successfully!',
     data: {
       accessToken: session.accessToken,
       refreshToken: session.refreshToken,
+      language: user.language,
     },
   });
 };
@@ -84,7 +92,7 @@ export const updateCurrentUserController = async (req, res) => {
 
 export const refreshTokenController = async (req, res) => {
   // const { sessionId, refreshToken } = req.cookies;
-  const {refreshToken } = req.body;
+  const { refreshToken } = req.body;
 
   const session = await refreshSession(refreshToken);
 
@@ -98,6 +106,10 @@ export const refreshTokenController = async (req, res) => {
     secure: true,
     expires: session.refreshTokenValidUntil,
   });
+  res.cookie('language', session.language, {
+    httpOnly: false, // Доступно на фронтенді
+    secure: true,
+  });
 
   res.status(200).json({
     status: 200,
@@ -105,6 +117,7 @@ export const refreshTokenController = async (req, res) => {
     data: {
       accessToken: session.accessToken,
       refreshToken: session.refreshToken,
+      language: session.language,
     },
   });
 };
