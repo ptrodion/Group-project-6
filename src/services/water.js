@@ -1,12 +1,7 @@
 import createHttpError from 'http-errors';
 import { WaterCollection } from '../db/models/water.js';
-import { UsersCollection } from '../db/models/user.js';
 
 //creating a new record(volume,date and userId)
-
-export const getCurrentDailyNormByUser = async (userId) => {
-  return await UsersCollection.findById(userId);
-};
 
 export const createWater = async (payload) => {
   let { amount, date, currentDailyNorm, userId } = payload;
@@ -105,12 +100,12 @@ export const getWaterPerDay = async (userId, date) => {
     date: { $gte: startOfDayISO, $lte: endOfDayISO },
   }).lean();
 
-  if (!waterRecords) {
-    return {
-      value: [],
-      totalAmount: 0,
-    };
-  }
+  // if (!waterRecords) {
+  //   return {
+  //     value: [],
+  //     totalAmount: 0,
+  //   };
+  // }
 
   const data = waterRecords.map((record) => ({
     id: record._id,
@@ -122,13 +117,12 @@ export const getWaterPerDay = async (userId, date) => {
   // const totalAmount = waterRecords.reduce((acc, curr) => acc + curr.amount, 0);
 
   return {
-    data
+    data,
     // totalAmount,
   };
 };
 
 export const getWaterPerMonth = async (userId, date) => {
-
   const startOfMonth = new Date(date);
   startOfMonth.setUTCDate(1);
   startOfMonth.setUTCHours(0, 0, 0, 0);
@@ -168,7 +162,7 @@ export const getWaterPerMonth = async (userId, date) => {
   //   currentDailyNorm: groupedByDay[date].currentDailyNorm,
   // }));
 
-const data = waterRecords.map((record) => ({
+  const data = waterRecords.map((record) => ({
     id: record._id,
     date: record.date,
     amount: record.amount,

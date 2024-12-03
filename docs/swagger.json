@@ -208,6 +208,11 @@
                           "type": "string",
                           "example": "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG",
                           "description": "JWT token for accessing protected resources"
+                        },
+                        "refreshToken": {
+                          "type": "string",
+                          "example": "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG",
+                          "description": "JWT token for accessing protected resources"
                         }
                       }
                     }
@@ -272,6 +277,27 @@
             "bearerAuth": []
           }
         ],
+        "requestBody": {
+          "description": "Refresh token",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "refreshToken"
+                ],
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG",
+                    "description": "JWT token for accessing protected resources"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Session refreshed successfully",
@@ -293,7 +319,13 @@
                       "properties": {
                         "accessToken": {
                           "type": "string",
-                          "example": "newlyGeneratedAccessToken12345"
+                          "example": "newlyGeneratedAccessToken12345",
+                          "description": "JWT token for accessing protected resources"
+                        },
+                        "refreshToken": {
+                          "type": "string",
+                          "example": "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG",
+                          "description": "JWT token for accessing protected resources"
                         }
                       }
                     }
@@ -626,7 +658,7 @@
                   "date": {
                     "type": "string",
                     "format": "date-time",
-                    "example": "2024-11-29T11:00:00.000Z",
+                    "example": "2024-11-26T15:30:45",
                     "description": "The date and time when the water was consumed.",
                     "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{3})?Z$"
                   }
@@ -759,7 +791,7 @@
                   "date": {
                     "type": "string",
                     "format": "date-time",
-                    "example": "2024-11-29T11:00:00.000Z",
+                    "example": "2024-11-26T15:30:45",
                     "description": "The date and time when the water was consumed(optional)."
                   },
                   "currentDailyNorm": {

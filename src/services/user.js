@@ -4,11 +4,17 @@ import createHttpError from 'http-errors';
 import fs from 'fs/promises';
 import path from 'node:path';
 import cloudinary from 'cloudinary';
+import jwt from 'jsonwebtoken';
+import handlebars from 'handlebars';
 
 import { UsersCollection } from '../db/models/user.js';
 import { SessionCollection } from '../db/models/session.js';
 
 import { uploadToCloudinary } from '../utils/uploadToCloudinary.js';
+
+import { SMTP, TEMPLATES_DIR } from '../constants/index.js';
+import { env } from '../utils/env.js';
+import { sendEmail } from '../utils/sendMail.js';
 
 const saveAvatar = async (file) => {
   let cloudinaryUrl = null;
@@ -62,19 +68,19 @@ const createSession = () => {
   return {
     accessToken,
     refreshToken,
-    // accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
-    accessTokenValidUntil: new Date(Date.now() + 1500 * 60 * 1000),
+    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
     refreshTokenValidUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   };
 };
 
-const createAndSaveSession = async (userId) => {
+const createAndSaveSession = async (userId, language) => {
   const newSession = createSession();
+  newSession.language = language;
 
   return await SessionCollection.create({ userId, ...newSession });
 };
 
-export const registerUser = async (payload, file, language) => {
+export const registerUser = async (payload, file) => {
   const userExists = await UsersCollection.findOne({
     email: payload.email,
   });
@@ -98,25 +104,27 @@ export const registerUser = async (payload, file, language) => {
 };
 
 export const loginUser = async (email, password) => {
-  const user = await UsersCollection.findOne({ email: email.toLowerCase() });
+  const user = await UsersCollection.findOne({
+    email: email.toLowerCase(),
+  });
 
   if (!user) {
     throw createHttpError(401, 'Invalid credentials');
   }
 
   const isPasswordMatch = await bcrypt.compare(password, user.password);
-
   if (!isPasswordMatch) {
     throw createHttpError(401, 'Invalid credentials');
   }
   const userId = user._id;
+
   await SessionCollection.deleteOne({ userId });
+
   return await createAndSaveSession(userId);
 };
 
-export const refreshSession = async (sessionId, refreshToken) => {
-  const session = await SessionCollection.findById(sessionId);
-
+export const refreshSession = async (refreshToken) => {
+  const session = await SessionCollection.findOne({ refreshToken });
 
   if (!session) {
     throw createHttpError(401, 'Session not found');
@@ -130,14 +138,11 @@ export const refreshSession = async (sessionId, refreshToken) => {
     throw createHttpError(401, 'Refresh token expired');
   }
 
-  const newSession = await createAndSaveSession(session.userId);
-
-  await SessionCollection.deleteOne({ _id: session._id });
+  await SessionCollection.deleteOne({ refreshToken });
   return await createAndSaveSession(session.userId);
 };
 
 export const logoutUser = async (sessionId) => {
-
   if (!sessionId) {
     throw createHttpError(401, 'Session not found');
   }
@@ -145,6 +150,15 @@ export const logoutUser = async (sessionId) => {
   return await SessionCollection.deleteOne({ _id: sessionId });
 };
 
+export const getCurrentUserByEmail = async (email) => {
+  const user = await UsersCollection.findOne({ email });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  return user;
+};
 export const getCurrentUser = async (userId) => {
   const user = await UsersCollection.findById(userId);
 
@@ -182,7 +196,7 @@ export const updateUser = async (userId, updateData, file) => {
 
   const updatedUser = await UsersCollection.findByIdAndUpdate(
     userId,
-    updateData,
+    { ...updateData }, // Оновлені дані
     {
       new: true,
       runValidators: true,
@@ -225,4 +239,68 @@ export const loginOrRegisterUser = async (payload) => {
   };
   };
 
+export const requestResetToken = async (email) => {
+  const user = await UsersCollection.findOne({ email });
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+  const resetToken = jwt.sign(
+    {
+      sub: user._id,
+      email,
+    },
+    env('JWT_SECRET'),
+    {
+      expiresIn: '15m',
+    },
+  );
 
+  const resetPasswordTemplatePath = path.join(
+    TEMPLATES_DIR,
+    'reset-password-email.html',
+  );
+
+  const templateSource = (
+    await fs.readFile(resetPasswordTemplatePath)
+  ).toString();
+
+  const template = handlebars.compile(templateSource);
+  const html = template({
+    name: user.name,
+    link: `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+  });
+
+  await sendEmail({
+    from: env(SMTP.SMTP_FROM),
+    to: email,
+    subject: 'Reset your password',
+    html,
+  });
+};
+
+export const resetPassword = async (payload) => {
+  let entries;
+
+  try {
+    entries = jwt.verify(payload.token, env('JWT_SECRET'));
+  } catch (err) {
+    if (err instanceof Error) throw createHttpError(401, err.message);
+    throw err;
+  }
+
+  const user = await UsersCollection.findOne({
+    email: entries.email,
+    _id: entries.sub,
+  });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const encryptedPassword = await bcrypt.hash(payload.password, 10);
+
+  await UsersCollection.updateOne(
+    { _id: user._id },
+    { password: encryptedPassword },
+  );
+};

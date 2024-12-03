@@ -21,6 +21,11 @@ import {
   confirmOAuthSchema,
 } from '../validation/user.js';
 
+import { requestResetEmailSchema } from '../validation/user.js';
+import { requestResetEmailController } from '../controllers/user.js';
+import { resetPasswordSchema } from '../validation/user.js';
+import { resetPasswordController } from '../controllers/user.js';
+
 const userRouter = Router();
 
 userRouter.post(
@@ -56,5 +61,17 @@ userRouter.post('/logout', ctrlWrapper(logoutController));
 
 userRouter.get('/get-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
 userRouter.post('/confirm-oauth', validateBody(confirmOAuthSchema), ctrlWrapper(confirmOAuthController));
+
+userRouter.post(
+  '/request-reset-email',
+  validateBody(requestResetEmailSchema),
+  ctrlWrapper(requestResetEmailController),
+);
+
+userRouter.post(
+  '/reset-password',
+  validateBody(resetPasswordSchema),
+  ctrlWrapper(resetPasswordController),
+);
 
 export default userRouter;

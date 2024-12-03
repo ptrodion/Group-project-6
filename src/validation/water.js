@@ -28,6 +28,7 @@ export const updateWaterSchema = Joi.object({
   }),
   date: Joi.string().example("2024-11-29T11:00:00").messages({
     'string.base': 'The date must be a string.',
+    'string.pattern.base': 'The date must be in the format YYYY-MM-DDThh:mm:ss. Please ensure the date and time are separated by a "T".',
   }),
 })
   .min(1)

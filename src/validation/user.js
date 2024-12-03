@@ -13,7 +13,7 @@ export const registerUserSchema = Joi.object({
     'string.min': 'Password should be at least 6 characters long',
     'any.required': 'Password is required',
   }),
-  language: Joi.string().valid('en', 'de', 'ua').optional(),
+  language: Joi.string().valid('en', 'de', 'uk').optional(),
 });
 
 export const loginUserSchema = Joi.object({
@@ -29,6 +29,7 @@ export const loginUserSchema = Joi.object({
     'string.min': 'Password should be at least 6 characters long',
     'any.required': 'Password is required',
   }),
+  language: Joi.string().valid('en', 'de', 'uk'),
 });
 
 export const updateCurrentUserSchema = Joi.object({
@@ -49,16 +50,12 @@ export const updateCurrentUserSchema = Joi.object({
     'any.required': 'Password is required',
   }),
   gender: Joi.string().valid('woman', 'man'),
-  currentDailyNorm: Joi.number()
-    .integer()
-    .min(50)
-    .max(5000)
-    .messages({
-      'any.required': 'CurrentDailyNorm is required',
-      'number.integer': 'CurrentDailyNorm must be an integer',
-      'number.min': 'CurrentDailyNorm must be at least 50',
-      'number.max': 'CurrentDailyNorm must be at most 5000',
-    }),
+  currentDailyNorm: Joi.number().integer().min(50).max(5000).messages({
+    'any.required': 'CurrentDailyNorm is required',
+    'number.integer': 'CurrentDailyNorm must be an integer',
+    'number.min': 'CurrentDailyNorm must be at least 50',
+    'number.max': 'CurrentDailyNorm must be at most 5000',
+  }),
   avatarUrlCloudinary: Joi.string(),
   avatarUrlLocal: Joi.string(),
   weight: Joi.number().integer().min(0).messages({
@@ -69,7 +66,16 @@ export const updateCurrentUserSchema = Joi.object({
     'number.integer': 'ActiveTime must be an integer',
     'number.min': 'ActiveTime cannot be less than 0',
   }),
-  language: Joi.string().valid('en', 'de', 'ua'),
+  language: Joi.string().valid('en', 'de', 'uk'),
+});
+
+export const requestResetEmailSchema = Joi.object({
+  email: Joi.string().email().required(),
+});
+
+export const resetPasswordSchema = Joi.object({
+  password: Joi.string().required(),
+  token: Joi.string().required(),
 });
 
 export const confirmOAuthSchema = Joi.object({
