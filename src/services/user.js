@@ -210,6 +210,35 @@ export const updateUser = async (userId, updateData, file) => {
   return updatedUser;
 };
 
+export const loginOrRegisterUser = async (payload) => {
+  let user = await UsersCollection.findOne({email: payload.email});
+
+  if(user === null) {
+    const password = await bcrypt.hash(crypto.randomBytes(30).toString('base64'), 10);
+
+      user = await UsersCollection.create({
+      name: payload.name,
+      email:payload.email,
+      password
+    });
+  } else {
+
+    await SessionCollection.deleteMany({ userId: user._id });
+}
+    const newSession = createSession();
+
+    const session =  await SessionCollection.create({
+      userId: user._id,
+      ...newSession,
+    });
+    return {
+      _id: session._id,
+      refreshToken: session.refreshToken,
+      accessToken: newSession.accessToken,
+     
+  };
+  };
+
 export const requestResetToken = async (email) => {
   const user = await UsersCollection.findOne({ email });
   if (!user) {

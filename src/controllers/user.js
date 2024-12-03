@@ -8,7 +8,10 @@ import {
   getCurrentUserByEmail,
   // requestResetEmail,
   // resetPassword,
+  loginOrRegisterUser,
 } from '../services/user.js';
+
+import {generateAuthUrl, validateCode} from '../utils/googleOAuth2.js';
 
 import { requestResetToken } from '../services/user.js';
 
@@ -141,6 +144,48 @@ export const logoutController = async (req, res) => {
 
   res.status(204).end();
 };
+
+export const getGoogleOAuthUrlController = async (req, res) => {
+  const url = generateAuthUrl();
+
+  res.json({
+    status: 200,
+    message: 'Successfully get Google OAuth url!',
+    data: {
+      url,
+    },
+  });
+};
+
+export const confirmOAuthController = async (req, res) => {
+const {code} = req.body;
+
+const ticket = await validateCode(code);
+
+const session = await loginOrRegisterUser({
+  email: ticket.payload.email,
+  name: ticket.payload.name,
+})};
+
+res.cookie('refreshToken', session.refreshToken, {
+  httpOnly: true,
+  secure: true,
+  expires: session.refreshTokenValidUntil,
+});
+res.cookie('sessionId', session._id, {
+  httpOnly: true,
+  secure: true,
+  expires: session.refreshTokenValidUntil,
+});
+
+res.status(200).json({
+  status: 200,
+  message: 'Login with Google successfully.',
+  data: {
+    accessToken: session.accessToken,
+    refreshToken: session.refreshToken,
+  },
+});
 
 export const requestResetEmailController = async (req, res) => {
   await requestResetToken(req.body.email);

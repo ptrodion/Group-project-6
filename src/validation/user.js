@@ -81,3 +81,7 @@ export const resetPasswordSchema = Joi.object({
 export const resfreshToken = Joi.object({
   token: Joi.string().required(),
 });
+
+export const confirmOAuthSchema = Joi.object({
+  code: Joi.string().required(),
+});
