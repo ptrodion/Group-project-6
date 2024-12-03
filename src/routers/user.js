@@ -15,6 +15,7 @@ import { authMiddleware } from '../middlewares/authMiddleware.js';
 import {
   loginUserSchema,
   registerUserSchema,
+  resfreshToken,
   updateCurrentUserSchema,
 } from '../validation/user.js';
 
@@ -52,7 +53,9 @@ userRouter.patch(
   ctrlWrapper(updateCurrentUserController),
 );
 
-userRouter.post('/refresh', ctrlWrapper(refreshTokenController));
+userRouter.post('/refresh',
+  validateBody(resfreshToken),
+  ctrlWrapper(refreshTokenController));
 
 userRouter.post('/logout', ctrlWrapper(logoutController));
 
