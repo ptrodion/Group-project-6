@@ -7,6 +7,8 @@ import {
   logoutController,
   getCurrentUserController,
   updateCurrentUserController,
+  getGoogleOAuthUrlController,
+  confirmOAuthController
 } from '../controllers/user.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateBody } from '../middlewares/validateBody.js';
@@ -16,6 +18,7 @@ import {
   loginUserSchema,
   registerUserSchema,
   updateCurrentUserSchema,
+  confirmOAuthSchema,
 } from '../validation/user.js';
 
 import { requestResetEmailSchema } from '../validation/user.js';
@@ -55,6 +58,9 @@ userRouter.patch(
 userRouter.post('/refresh', ctrlWrapper(refreshTokenController));
 
 userRouter.post('/logout', ctrlWrapper(logoutController));
+
+userRouter.get('/get-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
+userRouter.post('/confirm-oauth', validateBody(confirmOAuthSchema), ctrlWrapper(confirmOAuthController));
 
 userRouter.post(
   '/request-reset-email',

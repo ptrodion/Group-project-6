@@ -7,7 +7,7 @@ export const createWaterSchema = Joi.object({
     'number.integer': 'The amount of water should be a whole number.',
     'any.required': 'The amount of water is mandatory for filling.',
   }),
-  date: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/).required().example("2024-11-29T11:00:00.000Z").messages({
+  date: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/).required().example("2024-11-29T11:00:00").messages({
     'date.base': 'The date must be a string.',
     'string.pattern.base': 'The date must be in the format YYYY-MM-DDThh:mm:ss. Please ensure the date and time are separated by a "T".',
     'any.required': 'The date is required.',
@@ -26,7 +26,7 @@ export const updateWaterSchema = Joi.object({
     'number.integer': 'The amount of water should be a whole number.',
 
   }),
-  date: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/).example("2024-11-29T11:00:00.000Z").messages({
+  date: Joi.string().example("2024-11-29T11:00:00").messages({
     'string.base': 'The date must be a string.',
     'string.pattern.base': 'The date must be in the format YYYY-MM-DDThh:mm:ss. Please ensure the date and time are separated by a "T".',
   }),
