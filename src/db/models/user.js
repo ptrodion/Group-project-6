@@ -33,7 +33,7 @@ const userSchema = new Schema(
     weight: { type: Number, default: 0 },
     activeTime: { type: Number, default: 0 }, // у хвилинах
     currentDailyNorm: { type: Number, default: 1500 }, // денна норма води в мілілітрах
-    language: { type: String, enum: ['en', 'de', 'ua'], default: 'en' },
+    language: { type: String, enum: ['en', 'de', 'uk'], default: 'en' },
   },
   {
     timestamps: true,

@@ -13,7 +13,7 @@ export const registerUserSchema = Joi.object({
     'string.min': 'Password should be at least 6 characters long',
     'any.required': 'Password is required',
   }),
-  language: Joi.string().valid('en', 'de', 'ua').optional(),
+  language: Joi.string().valid('en', 'de', 'uk').optional(),
 });
 
 export const loginUserSchema = Joi.object({
@@ -29,6 +29,7 @@ export const loginUserSchema = Joi.object({
     'string.min': 'Password should be at least 6 characters long',
     'any.required': 'Password is required',
   }),
+  language: Joi.string().valid('en', 'de', 'uk'),
 });
 
 export const updateCurrentUserSchema = Joi.object({
@@ -65,7 +66,7 @@ export const updateCurrentUserSchema = Joi.object({
     'number.integer': 'ActiveTime must be an integer',
     'number.min': 'ActiveTime cannot be less than 0',
   }),
-  language: Joi.string().valid('en', 'de', 'ua'),
+  language: Joi.string().valid('en', 'de', 'uk'),
 });
 
 export const requestResetEmailSchema = Joi.object({

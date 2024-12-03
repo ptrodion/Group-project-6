@@ -10,6 +10,7 @@ const sessionSchema = new Schema(
     refreshToken: { type: String, required: true },
     accessTokenValidUntil: { type: Date, required: true },
     refreshTokenValidUntil: { type: Date, required: true },
+    language: { type: String, default: 'en' },
   },
   {
     timestamps: true,
