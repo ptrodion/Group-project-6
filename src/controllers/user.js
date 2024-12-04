@@ -105,7 +105,6 @@ export const refreshTokenController = async (req, res) => {
     data: {
       accessToken: session.accessToken,
       refreshToken: session.refreshToken,
-      language: session.language,
     },
   });
 };

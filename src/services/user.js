@@ -141,12 +141,12 @@ export const refreshSession = async (refreshToken) => {
   return await createAndSaveSession(session.userId);
 };
 
-export const logoutUser = async (sessionId) => {
-  if (!sessionId) {
+export const logoutUser = async (accessToken) => {
+  if (!accessToken) {
     throw createHttpError(401, 'Session not found');
   }
 
-  return await SessionCollection.deleteOne({ _id: sessionId });
+  return await SessionCollection.deleteOne({ accessToken });
 };
 
 // export const getCurrentUserByEmail = async (email) => {
@@ -195,7 +195,7 @@ export const updateUser = async (userId, updateData, file) => {
 
   const updatedUser = await UsersCollection.findByIdAndUpdate(
     userId,
-    { ...updateData }, // Оновлені дані
+    { ...updateData },
     {
       new: true,
       runValidators: true,
