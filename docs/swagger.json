@@ -17,6 +17,10 @@
   "security": [],
   "tags": [
     {
+      "name": "Auth with Google",
+      "description": "Auth operations with Google."
+    },
+    {
       "name": "Authentication",
       "description": "Operations about Authentication."
     },
@@ -34,6 +38,153 @@
     }
   ],
   "paths": {
+    "/api/auth/confirm-oauth": {
+      "post": {
+        "tags": [
+          "Auth with Google"
+        ],
+        "summary": "Confirm Google OAuth",
+        "operationId": "confirmOauth",
+        "description": "Confirms the authorization code from Google and logs in or registers the user.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "code"
+                ],
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "example": "4/0AeanS0ZLEXUstNXz4C_YhjBUuXjuK2FU2ByuHdKguGv0ek3hJePKOYRz3uO-Ei2zP3hp8w"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully logged in via Google OAuth!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Login with Google successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "accessToken",
+                        "refreshToken"
+                      ],
+                      "properties": {
+                        "accessToken": {
+                          "type": "string",
+                          "example": "IMVpPn7diaNqRgUIaY8OBOCXES8SO98iD1Bk3oxv"
+                        },
+                        "refreshToken": {
+                          "type": "string",
+                          "example": "87H7TmCUeY9zDFXt/nn/IWL/5iOzJR/6//KdZIYD"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing code."
+          },
+          "401": {
+            "description": "Invalid Google account or code."
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+    "/api/auth/get-oauth-url": {
+      "get": {
+        "tags": [
+          "Auth with Google"
+        ],
+        "summary": "Get Google OAuth URL",
+        "operationId": "getOAuthURL",
+        "description": "Returns the URL for initiating Google OAuth login.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully get Google OAuth url",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully get Google OAuth url"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "url"
+                      ],
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "example": "https://accounts.google.com/o/oauth2/v2/auth?scope=email&response_type=code&client_id=your-client-id&redirect_uri=your-redirect-uri"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
     "/api/auth/register": {
       "post": {
         "tags": [
@@ -291,7 +442,7 @@
                   "refreshToken": {
                     "type": "string",
                     "example": "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG",
-                    "description": "JWT token for accessing protected resources"
+                    "description": "JWT token for accessing protected resources."
                   }
                 }
               }
@@ -523,13 +674,7 @@
                     "example": "en",
                     "description": "The user's preferred language for communication and system notifications(optional)"
                   },
-                  "avatarUrlLocal": {
-                    "type": "string",
-                    "format": "binary",
-                    "example": "https://example.com/avatar.jpg",
-                    "description": "The URL for the user's new avatar image (optional)"
-                  },
-                  "avatarUrlCloudinary": {
+                  "avatarUrl": {
                     "type": "string",
                     "format": "binary",
                     "example": "https://example.com/avatar.jpg",
@@ -1416,12 +1561,6 @@
             "description": "Daily water intake norm in milliliters"
           },
           "avatarUrlLocal": {
-            "type": "string",
-            "format": "binari",
-            "example": "https://example.com/avatar.jpg",
-            "description": "URL of the user's avatar"
-          },
-          "avatarUrlCloudinary": {
             "type": "string",
             "format": "binari",
             "example": "https://example.com/avatar.jpg",

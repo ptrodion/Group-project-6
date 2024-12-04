@@ -7,6 +7,8 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   description: Application for monitoring water consumption
 tags:
+  - name: Auth with Google
+    description: Auth operations with Google.
   - name: Authentication
     description: Operations about Authentication.
   - name: User
@@ -18,6 +20,12 @@ tags:
 servers:
   - url: https://warettrack.onrender.com
 paths:
+  /api/auth/confirm-oauth:
+    post:
+      $ref: ../swagger/paths/authGoogle/confirm-oauth.yaml
+  /api/auth/get-oauth-url:
+    get:
+      $ref: ../swagger/paths/authGoogle/get-oauth-url.yaml
   /api/auth/register:
     post:
       $ref: ../swagger/paths/authentication/registerPost.yaml

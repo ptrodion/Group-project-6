@@ -1,0 +1,54 @@
+tags:
+  - Auth with Google
+summary: Confirm Google OAuth
+operationId: confirmOauth
+description: Confirms the authorization code from Google and logs in or registers the user.
+security: []
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - code
+        properties:
+          code:
+            type: string
+            example: '4/0AeanS0ZLEXUstNXz4C_YhjBUuXjuK2FU2ByuHdKguGv0ek3hJePKOYRz3uO-Ei2zP3hp8w'
+responses:
+  '200':
+    description: 'Successfully logged in via Google OAuth!'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Login with Google successfully'
+            data:
+              type: object
+              required:
+                - accessToken
+                - refreshToken
+              properties:
+                accessToken:
+                  type: string
+                  example: 'IMVpPn7diaNqRgUIaY8OBOCXES8SO98iD1Bk3oxv'
+                refreshToken:
+                  type: string
+                  example: '87H7TmCUeY9zDFXt/nn/IWL/5iOzJR/6//KdZIYD'
+  '400':
+    description: 'Invalid or missing code.'
+  '401':
+    description: 'Invalid Google account or code.'
+  '500':
+    description: 'Server error.'
