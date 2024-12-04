@@ -1,0 +1,47 @@
+tags:
+  - Authentication
+summary: Request Reset Password
+operationId: requestPasswordReset
+description: "Generate and send a password reset token to the user's email"
+security:
+  - bearerAuth: []
+requestBody:
+  description: 'Email for password reset'
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+        properties:
+          email:
+            type: string
+            format: email
+            example: user@example.com
+            description: >
+              User's email address for password reset request.
+              **Validation rules:**
+              - Must be a valid email format
+              - Cannot be empty
+responses:
+  '200':
+    description: Password reset email sent successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 'Reset password email was successfully sent!'
+            status:
+              type: integer
+              example: 200
+            data:
+              type: object
+              description: Empty object
+  '404':
+    $ref: '../../components/responses/404.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'

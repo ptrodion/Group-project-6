@@ -291,7 +291,7 @@
                   "refreshToken": {
                     "type": "string",
                     "example": "UVgfgeaODz8j7Z+mUnfpLoVOHp3UVjFdPlwHklqG",
-                    "description": "JWT token for accessing protected resources"
+                    "description": "JWT token for accessing protected resources."
                   }
                 }
               }
@@ -388,6 +388,148 @@
           },
           "500": {
             "description": "Internal Server Error - Something went wrong on the server side.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/api/auth/request-reset-email": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Request Reset Password",
+        "operationId": "requestPasswordReset",
+        "description": "Generate and send a password reset token to the user's email",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Email for password reset",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com",
+                    "description": "User's email address for password reset request. **Validation rules:** - Must be a valid email format - Cannot be empty\n"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset email sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Reset password email was successfully sent!"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Empty object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/api/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Reset Password",
+        "operationId": "resetPassword",
+        "description": "Reset user password using a valid reset token",
+        "requestBody": {
+          "description": "Password reset payload",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "token",
+                  "password"
+                ],
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "description": "JWT token received via email for password reset",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "minLength": 8,
+                    "description": "New password for the user account. **Validation rules:** - Minimum 8 characters long - Should include a mix of uppercase, lowercase, numbers, and special characters example: 'NewStrongPassword123!'\n"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password was successfully reset!"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Empty object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401_expiredToken"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
             "$ref": "#/components/responses/500"
           }
         }
@@ -523,13 +665,7 @@
                     "example": "en",
                     "description": "The user's preferred language for communication and system notifications(optional)"
                   },
-                  "avatarUrlLocal": {
-                    "type": "string",
-                    "format": "binary",
-                    "example": "https://example.com/avatar.jpg",
-                    "description": "The URL for the user's new avatar image (optional)"
-                  },
-                  "avatarUrlCloudinary": {
+                  "avatarUrl": {
                     "type": "string",
                     "format": "binary",
                     "example": "https://example.com/avatar.jpg",
@@ -1416,12 +1552,6 @@
             "description": "Daily water intake norm in milliliters"
           },
           "avatarUrlLocal": {
-            "type": "string",
-            "format": "binari",
-            "example": "https://example.com/avatar.jpg",
-            "description": "URL of the user's avatar"
-          },
-          "avatarUrlCloudinary": {
             "type": "string",
             "format": "binari",
             "example": "https://example.com/avatar.jpg",
