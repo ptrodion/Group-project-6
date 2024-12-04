@@ -3,7 +3,6 @@ tags:
 summary: Get Google OAuth URL
 operationId: getOAuthURL
 description: 'Returns the URL for initiating Google OAuth login.'
-security: []
 responses:
   '200':
     description: 'Successfully get Google OAuth url'
@@ -32,5 +31,7 @@ responses:
                   example: 'https://accounts.google.com/o/oauth2/v2/auth?scope=...'
   '404':
     description: 'User not found'
+    $ref: '../../components/responses/404.yaml'
   '500':
-    description: 'Server error'
+    description: 'Internal Server Error - Something went wrong on the server side.'
+    $ref: '../../components/responses/500.yaml'

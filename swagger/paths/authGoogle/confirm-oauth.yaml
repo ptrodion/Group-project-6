@@ -3,7 +3,6 @@ tags:
 summary: Confirm Google OAuth
 operationId: confirmOauth
 description: Confirms the authorization code from Google and logs in or registers the user.
-security: []
 requestBody:
   required: true
   content:
@@ -48,7 +47,10 @@ responses:
                   example: '87H7TmCUeY9zDFXt/nn/IWL/5iOzJR/6//KdZIYD'
   '400':
     description: 'Invalid or missing code.'
+    $ref: '../../components/responses/400.yaml'
   '401':
     description: 'Invalid Google account or code.'
+    $ref: '../../components/responses/401_expiredToken.yaml'
   '500':
-    description: 'Server error.'
+    description: 'Internal Server Error - Something went wrong on the server side.'
+    $ref: '../../components/responses/500.yaml'
