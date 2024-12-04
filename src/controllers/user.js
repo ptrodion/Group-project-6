@@ -110,21 +110,21 @@ export const refreshTokenController = async (req, res) => {
 };
 
 export const logoutController = async (req, res) => {
-  const { sessionId } = req.cookies;
+  const { accessToken } = req.cookies;
 
-  if (!sessionId) {
+  if (!accessToken) {
     return res.status(401).json({
       status: 401,
       message: 'Session not found',
     });
   }
 
-  if (sessionId) {
-    await logoutUser(sessionId);
+  if (accessToken) {
+    await logoutUser(accessToken);
   }
 
   res.clearCookie('refreshToken');
-  res.clearCookie('sessionId');
+  res.clearCookie('accessToken');
 
   res.status(204).end();
 };
