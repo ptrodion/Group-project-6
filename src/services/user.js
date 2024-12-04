@@ -108,12 +108,12 @@ export const loginUser = async (email, password) => {
   });
 
   if (!user) {
-    throw createHttpError(401, 'Invalid credentials');
+    throw createHttpError(401, 'Credentials not verified');
   }
 
   const isPasswordMatch = await bcrypt.compare(password, user.password);
   if (!isPasswordMatch) {
-    throw createHttpError(401, 'Invalid credentials');
+    throw createHttpError(401, 'Credentials not verified');
   }
   const userId = user._id;
 
