@@ -5,17 +5,12 @@ import {
   refreshSession,
   updateUser,
   getCurrentUser,
-  getCurrentUserByEmail,
-  // requestResetEmail,
-  // resetPassword,
   loginOrRegisterUser,
+  requestResetToken,
+  resetPassword,
 } from '../services/user.js';
 
-import {generateAuthUrl, validateCode} from '../utils/googleOAuth2.js';
-
-import { requestResetToken } from '../services/user.js';
-
-import { resetPassword } from '../services/user.js';
+import { generateAuthUrl, validateCode } from '../utils/googleOAuth2.js';
 
 export const registerController = async (req, res) => {
   const payload = {
@@ -41,23 +36,18 @@ export const loginController = async (req, res) => {
   const { email, password } = req.body;
 
   const session = await loginUser(email, password);
-  const user = await getCurrentUserByEmail(email);
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     secure: true,
     expires: session.refreshTokenValidUntil,
   });
+
   res.cookie('sessionId', session._id, {
     httpOnly: true,
     secure: true,
     expires: session.refreshTokenValidUntil,
   });
-
-  // res.cookie('language', user.language, {
-  //   httpOnly: false, // Дозволяє доступ на фронтенді
-  //   secure: true,
-  // });
 
   res.status(200).json({
     status: 200,
@@ -65,7 +55,6 @@ export const loginController = async (req, res) => {
     data: {
       accessToken: session.accessToken,
       refreshToken: session.refreshToken,
-      language: user.language,
     },
   });
 };
@@ -109,10 +98,6 @@ export const refreshTokenController = async (req, res) => {
     secure: true,
     expires: session.refreshTokenValidUntil,
   });
-  // res.cookie('language', session.language, {
-  //   httpOnly: false, // Доступно на фронтенді
-  //   secure: true,
-  // });
 
   res.status(200).json({
     status: 200,
@@ -157,42 +142,39 @@ export const getGoogleOAuthUrlController = async (req, res) => {
   });
 };
 
-
 export const confirmOAuthController = async (req, res) => {
+  const { code } = req.body;
+  const ticket = await validateCode(code);
 
-    const { code } = req.body;
-    const ticket = await validateCode(code);
+  const session = await loginOrRegisterUser({
+    email: ticket.payload.email,
+    name: ticket.payload.name,
+  });
 
-    const session = await loginOrRegisterUser({
-      email: ticket.payload.email,
-      name: ticket.payload.name,
-    });
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    secure: true,
+    expires: session.refreshTokenValidUntil,
+  });
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    secure: true,
+    expires: session.refreshTokenValidUntil,
+  });
 
-    res.cookie('refreshToken', session.refreshToken, {
-      httpOnly: true,
-      secure: true,
-      expires: session.refreshTokenValidUntil,
-    });
-    res.cookie('sessionId', session._id, {
-      httpOnly: true,
-      secure: true,
-      expires: session.refreshTokenValidUntil,
-    });
-
-
-    res.status(200).json({
-      status: 200,
-      message: 'Login with Google successfully.',
-      data: {
-        accessToken: session.accessToken,
-        refreshToken: session.refreshToken,
-      },
-    });
+  res.status(200).json({
+    status: 200,
+    message: 'Login with Google successfully.',
+    data: {
+      accessToken: session.accessToken,
+      refreshToken: session.refreshToken,
+    },
+  });
 };
 
 export const requestResetEmailController = async (req, res) => {
   await requestResetToken(req.body.email);
-  res.json({
+  res.status(200).json({
     message: 'Reset password email was successfully sent!',
     status: 200,
     data: {},
@@ -201,7 +183,7 @@ export const requestResetEmailController = async (req, res) => {
 
 export const resetPasswordController = async (req, res) => {
   await resetPassword(req.body);
-  res.json({
+  res.status(200).json({
     message: 'Password was successfully reset!',
     status: 200,
     data: {},

@@ -73,9 +73,8 @@ const createSession = () => {
   };
 };
 
-const createAndSaveSession = async (userId, language) => {
+const createAndSaveSession = async (userId) => {
   const newSession = createSession();
-  newSession.language = language;
 
   return await SessionCollection.create({ userId, ...newSession });
 };
@@ -150,15 +149,15 @@ export const logoutUser = async (sessionId) => {
   return await SessionCollection.deleteOne({ _id: sessionId });
 };
 
-export const getCurrentUserByEmail = async (email) => {
-  const user = await UsersCollection.findOne({ email });
+// export const getCurrentUserByEmail = async (email) => {
+//   const user = await UsersCollection.findOne({ email });
 
-  if (!user) {
-    throw createHttpError(404, 'User not found');
-  }
+//   if (!user) {
+//     throw createHttpError(404, 'User not found');
+//   }
 
-  return user;
-};
+//   return user;
+// };
 export const getCurrentUser = async (userId) => {
   const user = await UsersCollection.findById(userId);
 
@@ -211,35 +210,37 @@ export const updateUser = async (userId, updateData, file) => {
 };
 
 export const loginOrRegisterUser = async (payload) => {
-  let user = await UsersCollection.findOne({email: payload.email});
+  let user = await UsersCollection.findOne({ email: payload.email });
 
-  if(user === null) {
-    const password = await bcrypt.hash(crypto.randomBytes(30).toString('base64'), 10);
+  if (user === null) {
+    const password = await bcrypt.hash(
+      crypto.randomBytes(30).toString('base64'),
+      10,
+    );
 
-      user = await UsersCollection.create({
+    user = await UsersCollection.create({
       name: payload.name,
-      email:payload.email,
-      password
+      email: payload.email,
+      password,
     });
   } else {
-
     await SessionCollection.deleteMany({ userId: user._id });
-}
-    // const newSession = createSession();
+  }
+  // const newSession = createSession();
 
-    // await SessionCollection.deleteOne({ refreshToken });
-    const session = await createAndSaveSession(user._id);
+  // await SessionCollection.deleteOne({ refreshToken });
+  const session = await createAndSaveSession(user._id);
 
-    // const session =  await SessionCollection.create({
-    //   userId: user._id,
-    //   ...newSession,
-    // });
-    return {
-      _id: session._id,
-      refreshToken: session.refreshToken,
-      accessToken: session.accessToken,
+  // const session =  await SessionCollection.create({
+  //   userId: user._id,
+  //   ...newSession,
+  // });
+  return {
+    _id: session._id,
+    refreshToken: session.refreshToken,
+    accessToken: session.accessToken,
   };
-  };
+};
 
 export const requestResetToken = async (email) => {
   const user = await UsersCollection.findOne({ email });

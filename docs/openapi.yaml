@@ -30,6 +30,12 @@ paths:
   /api/auth/refresh:
     post:
       $ref: ../swagger/paths/authentication/refreshPost.yaml
+  /api/auth/request-reset-email:
+    post:
+      $ref: ../swagger/paths/authentication/requestResetEmail.yaml
+  /api/auth/reset-password:
+    post:
+      $ref: ../swagger/paths/authentication/resetPassword.yaml
   /api/auth/current:
     get:
       $ref: ../swagger/paths/user/currentGet.yaml
