@@ -149,15 +149,6 @@ export const logoutUser = async (accessToken) => {
   return await SessionCollection.deleteOne({ accessToken });
 };
 
-// export const getCurrentUserByEmail = async (email) => {
-//   const user = await UsersCollection.findOne({ email });
-
-//   if (!user) {
-//     throw createHttpError(404, 'User not found');
-//   }
-
-//   return user;
-// };
 export const getCurrentUser = async (userId) => {
   const user = await UsersCollection.findById(userId);
 

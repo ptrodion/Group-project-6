@@ -110,7 +110,7 @@ export const refreshTokenController = async (req, res) => {
 };
 
 export const logoutController = async (req, res) => {
-  const { accessToken } = req.cookies;
+  const { accessToken } = req.body;
 
   if (!accessToken) {
     return res.status(401).json({
