@@ -16,7 +16,7 @@ tags:
   - name: Water
     description: Operations about Water.
 servers:
-  - url: https://warettrack.onrender.com
+  - url: https://watertrack.onrender.com
 paths:
   /api/auth/register:
     post:
