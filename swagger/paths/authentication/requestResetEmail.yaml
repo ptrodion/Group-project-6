@@ -3,8 +3,6 @@ tags:
 summary: Request Reset Password
 operationId: requestPasswordReset
 description: "Generate and send a password reset token to the user's email"
-security:
-  - bearerAuth: []
 requestBody:
   description: 'Email for password reset'
   required: true
@@ -42,6 +40,7 @@ responses:
               type: object
               description: Empty object
   '404':
+    description: 'Element not found'
     $ref: '../../components/responses/404.yaml'
   '500':
     description: 'Internal Server Error - Something went wrong on the server side.'
