@@ -64,14 +64,6 @@ export const updateCurrentUserSchema = Joi.object({
 });
 
 export const requestResetEmailSchema = Joi.object({
-  // email: Joi.string()
-  //   .email()
-  //   .required()
-  //   .pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
-  //   .messages({
-  //     'string.pattern.base': 'Please enter a valid email address',
-  //     'any.required': 'email is required',
-  //   }),
   email: Joi.email()
     .required()
     .pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
@@ -79,6 +71,13 @@ export const requestResetEmailSchema = Joi.object({
       'string.pattern.base': 'Please enter a valid email address',
       'any.required': 'email is required',
     }),
+  // email: Joi.email()
+  //   .required()
+  //   .pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+  //   .messages({
+  //     'string.pattern.base': 'Please enter a valid email address',
+  //     'any.required': 'email is required',
+  //   }),
 });
 
 export const resetPasswordSchema = Joi.object({
