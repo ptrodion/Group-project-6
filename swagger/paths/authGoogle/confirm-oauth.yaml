@@ -3,6 +3,7 @@ tags:
 summary: Confirm Google OAuth
 operationId: confirmOauth
 description: Confirms the authorization code from Google and logs in or registers the user.
+security: []
 requestBody:
   required: true
   content:

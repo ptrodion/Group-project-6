@@ -13,28 +13,28 @@ requestBody:
         properties:
           id:
             type: string
-            example: "61e9f1f3e7b45c001ddc2e85"
+            example: '61e9f1f3e7b45c001ddc2e85'
             description: Unique identifier of the user
             minLength: 24
             maxLength: 24
-            pattern: "^[a-fA-F0-9]{24}$"
+            pattern: '^[a-fA-F0-9]{24}$'
           name:
             type: string
-            example: "John Doe"
+            example: 'John Doe'
             description: "The user's updated name (optional)"
             minLength: 3
             maxLength: 20
           email:
             type: string
             format: email
-            example: "john.doe@example.com"
+            example: 'john.doe@example.com'
             description: "The user's updated email (optional)"
           gender:
             type: string
             enum:
               - woman
               - man
-            example: "man"
+            example: 'man'
             description: "The user's updated gender (optional)"
           weight:
             type: integer
@@ -53,17 +53,17 @@ requestBody:
             minimum: 500
             maximum: 10000
           language:
-              type: string
-              enum:
-                - en
-                - de
-                - ua
-              example: "en"
-              description: "The user's preferred language for communication and system notifications(optional)"
-          avatarUrl:
+            type: string
+            enum:
+              - en
+              - de
+              - ua
+            example: 'en'
+            description: "The user's preferred language for communication and system notifications(optional)"
+          avatarUrlLocal:
             type: string
             format: binary
-            example: "https://example.com/avatar.jpg"
+            example: 'https://example.com/avatar.jpg'
             description: "The URL for the user's new avatar image (optional)"
 responses:
   '200':

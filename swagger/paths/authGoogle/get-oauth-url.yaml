@@ -3,6 +3,7 @@ tags:
 summary: Get Google OAuth URL
 operationId: getOAuthURL
 description: 'Returns the URL for initiating Google OAuth login.'
+security: []
 responses:
   '200':
     description: 'Successfully get Google OAuth url'

@@ -46,11 +46,7 @@
         "summary": "Confirm Google OAuth",
         "operationId": "confirmOauth",
         "description": "Confirms the authorization code from Google and logs in or registers the user.",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [],
         "requestBody": {
           "required": true,
           "content": {
@@ -114,13 +110,16 @@
             }
           },
           "400": {
-            "description": "Invalid or missing code."
+            "description": "Invalid or missing code.",
+            "$ref": "#/components/responses/400"
           },
           "401": {
-            "description": "Invalid Google account or code."
+            "description": "Invalid Google account or code.",
+            "$ref": "#/components/responses/401_expiredToken"
           },
           "500": {
-            "description": "Server error."
+            "description": "Internal Server Error - Something went wrong on the server side.",
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -133,11 +132,7 @@
         "summary": "Get Google OAuth URL",
         "operationId": "getOAuthURL",
         "description": "Returns the URL for initiating Google OAuth login.",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [],
         "responses": {
           "200": {
             "description": "Successfully get Google OAuth url",
@@ -167,7 +162,7 @@
                       "properties": {
                         "url": {
                           "type": "string",
-                          "example": "https://accounts.google.com/o/oauth2/v2/auth?scope=email&response_type=code&client_id=your-client-id&redirect_uri=your-redirect-uri"
+                          "example": "https://accounts.google.com/o/oauth2/v2/auth?scope=..."
                         }
                       }
                     }
@@ -177,10 +172,12 @@
             }
           },
           "404": {
-            "description": "User not found"
+            "description": "User not found",
+            "$ref": "#/components/responses/404"
           },
           "500": {
-            "description": "Server error"
+            "description": "Internal Server Error - Something went wrong on the server side.",
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -552,11 +549,6 @@
         "summary": "Request Reset Password",
         "operationId": "requestPasswordReset",
         "description": "Generate and send a password reset token to the user's email",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
         "requestBody": {
           "description": "Email for password reset",
           "required": true,
@@ -605,9 +597,11 @@
             }
           },
           "404": {
+            "description": "Element not found",
             "$ref": "#/components/responses/404"
           },
           "500": {
+            "description": "Internal Server Error - Something went wrong on the server side.",
             "$ref": "#/components/responses/500"
           }
         }
@@ -641,7 +635,7 @@
                   "password": {
                     "type": "string",
                     "format": "password",
-                    "minLength": 8,
+                    "minLength": 6,
                     "description": "New password for the user account. **Validation rules:** - Minimum 8 characters long - Should include a mix of uppercase, lowercase, numbers, and special characters example: 'NewStrongPassword123!'\n"
                   }
                 }
@@ -675,12 +669,15 @@
             }
           },
           "401": {
+            "description": "Invalid or expired access token",
             "$ref": "#/components/responses/401_expiredToken"
           },
           "404": {
+            "description": "Element not found",
             "$ref": "#/components/responses/404"
           },
           "500": {
+            "description": "Internal Server Error - Something went wrong on the server side.",
             "$ref": "#/components/responses/500"
           }
         }
@@ -816,7 +813,7 @@
                     "example": "en",
                     "description": "The user's preferred language for communication and system notifications(optional)"
                   },
-                  "avatarUrl": {
+                  "avatarUrlLocal": {
                     "type": "string",
                     "format": "binary",
                     "example": "https://example.com/avatar.jpg",
@@ -1578,6 +1575,31 @@
           }
         }
       },
+      "401_expiredToken": {
+        "description": "Invalid or expired access token",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Invalid or expired access token"
+                }
+              }
+            }
+          }
+        }
+      },
       "401_invalidDates": {
         "description": "Invalid credentials",
         "content": {
@@ -1604,31 +1626,6 @@
         }
       },
       "401_sessionNotFound": {
-        "description": "Invalid or expired access token",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "required": [
-                "status",
-                "message",
-                "data"
-              ],
-              "properties": {
-                "status": {
-                  "type": "integer",
-                  "example": 401
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Invalid or expired access token"
-                }
-              }
-            }
-          }
-        }
-      },
-      "401_expiredToken": {
         "description": "Invalid or expired access token",
         "content": {
           "application/json": {
