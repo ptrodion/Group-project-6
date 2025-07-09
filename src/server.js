@@ -32,6 +32,10 @@ export const setupServer = () => {
     }),
   );
 
+  app.get('/', (req, res) => {
+    res.send('Сервер работает! Добро пожаловать в API.');
+  });
+
   app.use('*', notFoundHandler);
   app.use(errorHandler);
 
